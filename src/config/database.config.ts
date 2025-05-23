@@ -1,6 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from 'src/modules/auth/entities/user.entity';
 import * as dotenv from 'dotenv';
+import { Employee } from 'src/modules/employees/entities/employee-profile.entity';
 
 dotenv.config();
 
@@ -10,6 +11,6 @@ export const databaseConfig: TypeOrmModuleOptions = {
   ssl: {
     rejectUnauthorized: false,
   },
-  entities: [User],
+  entities: [User, Employee],
   synchronize: true, // Only use in development
 };

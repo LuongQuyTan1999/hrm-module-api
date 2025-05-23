@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
-import { Public } from 'src/decorators/public.decorator';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Public } from 'src/common/decorators/public.decorator';
+import { User } from 'src/common/decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';
 import { SignupDto } from './dto/signup.dto';
+import { User as UserEntity } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -21,7 +23,7 @@ export class AuthController {
   }
 
   @Get('me')
-  getProfile(@Req() req) {
-    return req.user;
+  getProfile(@User() user: UserEntity) {
+    return user;
   }
 }
