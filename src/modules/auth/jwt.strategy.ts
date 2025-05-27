@@ -1,16 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityRepository } from '@mikro-orm/postgresql';
 import { jwtConstants } from 'src/common/constants';
+import { Users } from '../../common/db/entities/user.entity';
+
+// Define a clear interface for the user payload
+interface UserPayload {
+  id: string;
+  email: string;
+  role: string;
+}
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(Users)
+    private userRepository: EntityRepository<Users>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -19,13 +27,16 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: any) {
-    const user = await this.userRepository.findOne({
-      where: { id: payload.sub },
-    });
+  async validate(payload: any): Promise<UserPayload | null> {
+    const user = await this.userRepository.findOne({ id: payload.sub });
     if (!user) {
       return null;
     }
-    return { id: user.id, email: user.email, role: user.role };
+
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    };
   }
 }

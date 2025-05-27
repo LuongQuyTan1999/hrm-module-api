@@ -1,12 +1,12 @@
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../auth/entities/user.entity';
+import { Users } from '../../common/db/entities/user.entity';
 import { EmployeesController } from './employees.controller';
 import { EmployeesService } from './employees.service';
-import { Employee } from './entities/employee-profile.entity';
+import { Employees } from 'src/common/db/entities/employee.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Employee, User])],
+  imports: [MikroOrmModule.forFeature([Employees, Users])],
   controllers: [EmployeesController],
   providers: [EmployeesService],
 })

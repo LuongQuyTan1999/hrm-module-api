@@ -4,7 +4,7 @@ import { User } from 'src/common/decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';
 import { SignupDto } from './dto/signup.dto';
-import { User as UserEntity } from './entities/user.entity';
+import { Users as UsersEntity } from '../../common/db/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -23,7 +23,7 @@ export class AuthController {
   }
 
   @Get('me')
-  getProfile(@User() user: UserEntity) {
+  getProfile(@User() user: UsersEntity) {
     return user;
   }
 }

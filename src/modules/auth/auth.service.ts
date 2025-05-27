@@ -1,30 +1,30 @@
+import { EntityManager } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityRepository } from '@mikro-orm/postgresql';
 import {
   ConflictException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { SignupDto } from './dto/signup.dto';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { Users } from '../../common/db/entities/user.entity';
 import { SigninDto } from './dto/signin.dto';
+import { SignupDto } from './dto/signup.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(Users)
+    private userRepository: EntityRepository<Users>,
+    private readonly em: EntityManager,
     private jwtService: JwtService,
   ) {}
 
-  async signup(signupDto: SignupDto): Promise<User> {
-    const { email, password, full_name, role } = signupDto;
+  async signup(signupDto: SignupDto): Promise<Users> {
+    const { email, password, fullName, role } = signupDto;
 
-    const existingUser = await this.userRepository.findOne({
-      where: { email },
-    });
+    const existingUser = await this.userRepository.findOne({ email }); // this.em.findOne(Users, { email })
     if (existingUser) {
       throw new ConflictException('Email đã tồn tại');
     }
@@ -34,17 +34,20 @@ export class AuthService {
     const user = this.userRepository.create({
       email,
       password: hashedPassword,
-      full_name,
+      fullName,
       role,
     });
 
-    return this.userRepository.save(user);
+    // await this.userRepository.insert(user); // this.em.persist(user);
+    await this.em.persistAndFlush(user);
+
+    return user;
   }
 
-  async signin(signinDto: SigninDto): Promise<{ token: string; user: User }> {
+  async signin(signinDto: SigninDto): Promise<{ token: string; user: Users }> {
     const { email, password } = signinDto;
 
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ email });
     if (!user) {
       throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
     }

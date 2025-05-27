@@ -10,7 +10,7 @@ export class SignupDto {
   password: string;
 
   @IsString()
-  full_name: string;
+  fullName: string;
 
   @IsEnum(Role)
   role: Role;

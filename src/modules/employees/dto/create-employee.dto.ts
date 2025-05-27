@@ -3,11 +3,11 @@ import { ContractType } from 'src/common/enum/contract.enum';
 
 export class CreateEmployeeDto {
   @IsString()
-  user_id: string;
+  userId: string;
 
   @IsDateString()
   @IsOptional()
-  date_of_birth: string;
+  dateOfBirth: string;
 
   @IsString()
   @IsOptional()
@@ -27,13 +27,13 @@ export class CreateEmployeeDto {
 
   @IsEnum(ContractType)
   @IsOptional()
-  contract_type: ContractType;
+  contractType: ContractType;
 
   @IsDateString()
   @IsOptional()
-  contract_start: string;
+  contractStart: string;
 
   @IsDateString()
   @IsOptional()
-  contract_end: string;
+  contractEnd: string;
 }
