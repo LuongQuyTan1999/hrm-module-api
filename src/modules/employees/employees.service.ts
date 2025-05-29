@@ -1,28 +1,35 @@
-import { EntityManager } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository, EntityManager } from '@mikro-orm/postgresql';
 import {
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Role } from 'src/common/enum/role.enum';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { Employees } from 'src/common/db/entities/employee.entity';
 import { Users } from 'src/common/db/entities/user.entity';
+import { Role } from 'src/common/enum/role.enum';
+import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { EmployeeRepository } from './employees.repository';
+import { FindEmployeesDto } from './dto/query.dto';
 
 @Injectable()
 export class EmployeesService {
   constructor(
-    @InjectRepository(Employees)
-    private employeeRepository: EntityRepository<Employees>,
     @InjectRepository(Users)
     private userRepository: EntityRepository<Users>,
+    @InjectRepository(Employees)
+    private readonly employeeRepository: EmployeeRepository,
     private readonly em: EntityManager,
   ) {}
 
+  /**
+   * Create a new employee profile
+   * @param body - Employee profile information
+   * @param currentUser - Current user making the request, only ADMIN can create profiles
+   * @returns Employee profile created
+   */
   async create(
-    createEmployeeDto: CreateEmployeeDto,
+    body: CreateEmployeeDto,
     currentUser: Users,
   ): Promise<Employees> {
     if (currentUser.role !== Role.ADMIN) {
@@ -30,7 +37,7 @@ export class EmployeesService {
     }
 
     const user = await this.userRepository.findOne({
-      id: createEmployeeDto.userId,
+      id: body.userId,
     });
 
     if (!user) {
@@ -38,7 +45,7 @@ export class EmployeesService {
     }
 
     const existingEmployee = await this.employeeRepository.findOne({
-      user: createEmployeeDto.userId,
+      user: body.userId,
     });
 
     if (existingEmployee) {
@@ -48,12 +55,85 @@ export class EmployeesService {
     }
 
     const employee = this.employeeRepository.create({
-      ...createEmployeeDto,
+      ...body,
       user,
       createdBy: currentUser.id,
     });
 
     await this.em.persistAndFlush(employee);
     return employee;
+  }
+
+  /**
+   * Get a paginated list of employee profiles
+   * @param query - Pagination and filtering parameters
+   * @returns Employees profiles
+   */
+  async findAll(query: FindEmployeesDto) {
+    return this.employeeRepository.findPaginated(query);
+  }
+
+  /**
+   * Get an employee profile by ID
+   * @param id - ID of the employee profile
+   * @param currentUser - Current user making the request
+   * @returns Employee profile found
+   */
+  async findOne(id: string, currentUser: Users): Promise<Employees> {
+    const employee = await this.employeeRepository.findOne(id, {
+      populate: ['user'],
+    });
+
+    if (!employee) {
+      throw new NotFoundException('Hồ sơ nhân viên không tồn tại');
+    }
+
+    if (
+      currentUser.role !== Role.ADMIN &&
+      currentUser.role !== Role.MANAGER &&
+      employee.user.id !== currentUser.id
+    ) {
+      throw new ForbiddenException('Bạn không có quyền truy cập hồ sơ này');
+    }
+
+    return employee;
+  }
+
+  /**
+   * Update an employee profile by ID
+   * @param id - ID of the employee profile
+   * @param body - Information to update
+   * @returns Employee profile updated
+   */
+  async update(id: string, body: CreateEmployeeDto): Promise<Employees> {
+    const employee = await this.employeeRepository.findOne(id, {
+      populate: ['user'],
+    });
+
+    if (!employee) {
+      throw new NotFoundException('Hồ sơ nhân viên không tồn tại');
+    }
+
+    Object.assign(employee, body);
+
+    await this.em.persistAndFlush(employee);
+    return employee;
+  }
+
+  /**
+   * Remove an employee profile by ID
+   * @param id - ID of the employee profile
+   * @returns Notification message
+   */
+  async delete(id: string): Promise<{ message: string }> {
+    const employee = await this.employeeRepository.findOne(id);
+
+    if (!employee) {
+      throw new NotFoundException('Hồ sơ nhân viên không tồn tại');
+    }
+
+    await this.em.removeAndFlush(employee);
+
+    return { message: 'Hồ sơ nhân viên đã được xóa thành công' };
   }
 }

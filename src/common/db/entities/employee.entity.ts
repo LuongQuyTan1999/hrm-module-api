@@ -1,8 +1,9 @@
 import { Entity, ManyToOne, Property, type Ref } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
 import { Users } from './user.entity';
+import { EmployeeRepository } from 'src/modules/employees/employees.repository';
 
-@Entity()
+@Entity({ repository: () => EmployeeRepository })
 export class Employees extends BaseEntity {
   @ManyToOne({
     entity: () => Users,

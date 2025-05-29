@@ -1,6 +1,5 @@
-import { EntityManager } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository, EntityManager } from '@mikro-orm/postgresql';
 import {
   ConflictException,
   Injectable,
