@@ -1,39 +1,71 @@
-import { IsString, IsDateString, IsEnum, IsOptional } from 'class-validator';
-import { ContractType } from 'src/common/enum/contract.enum';
+import {
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateEmployeeDto {
   @IsString()
-  userId: string;
+  @IsNotEmpty()
+  employeeCode: string;
+
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
   @IsDateString()
-  @IsOptional()
+  @IsNotEmpty()
+  hireDate: string;
+
+  @IsDateString()
   dateOfBirth: string;
 
   @IsString()
   @IsOptional()
-  address: string;
+  gender?: string;
 
   @IsString()
   @IsOptional()
-  phone: string;
+  address?: string;
 
   @IsString()
   @IsOptional()
-  department: string;
+  phoneNumber?: string;
+
+  @IsUUID()
+  departmentId: string;
+
+  @IsUUID()
+  positionId: string;
 
   @IsString()
   @IsOptional()
-  position: string;
-
-  @IsEnum(ContractType)
-  @IsOptional()
-  contractType: ContractType;
+  contractType?: string;
 
   @IsDateString()
   @IsOptional()
-  contractStart: string;
+  contractStartDate?: string;
 
   @IsDateString()
   @IsOptional()
-  contractEnd: string;
+  contractEndDate?: string;
+
+  @IsString()
+  @IsOptional()
+  taxCode?: string;
+
+  @IsString()
+  @IsOptional()
+  bankAccount?: string;
 }

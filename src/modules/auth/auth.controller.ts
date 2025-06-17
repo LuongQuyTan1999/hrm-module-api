@@ -1,20 +1,19 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
 import { User } from 'src/common/decorators/user.decorator';
+import { Users as UsersEntity } from '../../common/db/entities/user.entity';
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';
-import { SignupDto } from './dto/signup.dto';
-import { Users as UsersEntity } from '../../common/db/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Public()
-  @Post('signup')
-  async signup(@Body() signupDto: SignupDto) {
-    return this.authService.signup(signupDto);
-  }
+  // @Public()
+  // @Post('signup')
+  // async signup(@Body() signupDto: SignupDto) {
+  //   return this.authService.signup(signupDto);
+  // }
 
   @Public()
   @Post('signin')

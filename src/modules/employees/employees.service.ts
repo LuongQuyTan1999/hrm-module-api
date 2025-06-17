@@ -1,6 +1,7 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -9,8 +10,10 @@ import { Employees } from 'src/common/db/entities/employee.entity';
 import { Users } from 'src/common/db/entities/user.entity';
 import { Role } from 'src/common/enum/role.enum';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { FindEmployeesDto } from './dto/query.dto';
 import { EmployeeRepository } from './employees.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class EmployeesService {
@@ -36,16 +39,15 @@ export class EmployeesService {
       throw new ForbiddenException('Chỉ admin có thể tạo hồ sơ nhân viên');
     }
 
-    const user = await this.userRepository.findOne({
-      id: body.userId,
-    });
-
-    if (!user) {
-      throw new NotFoundException('Người dùng không tồn tại');
-    }
-
     const existingEmployee = await this.employeeRepository.findOne({
-      user: body.userId,
+      $or: [
+        {
+          employeeCode: body.employeeCode,
+        },
+        {
+          email: body.email,
+        },
+      ],
     });
 
     if (existingEmployee) {
@@ -56,7 +58,6 @@ export class EmployeesService {
 
     const employee = this.employeeRepository.create({
       ...body,
-      user,
       createdBy: currentUser.id,
     });
 
@@ -81,7 +82,7 @@ export class EmployeesService {
    */
   async findOne(id: string, currentUser: Users): Promise<Employees> {
     const employee = await this.employeeRepository.findOne(id, {
-      populate: ['user'],
+      populate: ['departmentId', 'positionId'],
     });
 
     if (!employee) {
@@ -90,8 +91,8 @@ export class EmployeesService {
 
     if (
       currentUser.role !== Role.ADMIN &&
-      currentUser.role !== Role.MANAGER &&
-      employee.user.id !== currentUser.id
+      currentUser.role !== Role.MANAGER
+      // employee.user.id !== currentUser.id
     ) {
       throw new ForbiddenException('Bạn không có quyền truy cập hồ sơ này');
     }
@@ -107,7 +108,7 @@ export class EmployeesService {
    */
   async update(id: string, body: CreateEmployeeDto): Promise<Employees> {
     const employee = await this.employeeRepository.findOne(id, {
-      populate: ['user'],
+      populate: ['departmentId', 'positionId'],
     });
 
     if (!employee) {
@@ -135,5 +136,37 @@ export class EmployeesService {
     await this.em.removeAndFlush(employee);
 
     return { message: 'Hồ sơ nhân viên đã được xóa thành công' };
+  }
+
+  async createUser(
+    employeeId: string,
+    createUserDto: CreateUserDto,
+  ): Promise<Users> {
+    const employee = await this.employeeRepository.findOne(employeeId);
+    if (!employee) {
+      throw new BadRequestException('Employee not found');
+    }
+
+    const existingUser = await this.userRepository.findOne({
+      $or: [{ username: createUserDto.username }, { employee }],
+    });
+
+    if (existingUser) {
+      throw new BadRequestException(
+        'Username or employee already has a user account',
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
+    const user = this.userRepository.create({
+      employee,
+      username: createUserDto.username,
+      password: hashedPassword,
+      role: createUserDto.role,
+    });
+
+    await this.em.persistAndFlush(user);
+    return user;
   }
 }

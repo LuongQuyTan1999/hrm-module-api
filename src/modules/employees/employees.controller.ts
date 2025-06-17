@@ -14,6 +14,7 @@ import { User } from 'src/common/decorators/user.decorator';
 import { Role } from 'src/common/enum/role.enum';
 import { Users } from '../../common/db/entities/user.entity';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { FindEmployeesDto } from './dto/query.dto';
 import { EmployeesService } from './employees.service';
 
@@ -52,5 +53,14 @@ export class EmployeesController {
   @Roles(Role.ADMIN)
   async delete(@Param('id') id: string) {
     return this.employeesService.delete(id);
+  }
+
+  @Post(':id/users')
+  @Roles(Role.ADMIN)
+  async createUser(
+    @Param('id') employeeId: string,
+    @Body() body: CreateUserDto,
+  ) {
+    return this.employeesService.createUser(employeeId, body);
   }
 }

@@ -8,8 +8,12 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
+  // In prod we only allow the front-end origins specified in CORS_ORIGINS
   app.enableCors({
-    origin: true, // Allows all origins
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? (process.env.CORS_ORIGINS ?? '').split(',') // e.g. https://app.example.com
+        : true,
     credentials: true,
   });
 

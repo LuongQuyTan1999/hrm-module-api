@@ -1,32 +1,53 @@
-import { Entity, ManyToOne, Property, type Ref } from '@mikro-orm/core';
-import { BaseEntity } from './base.entity';
-import { Users } from './user.entity';
+import {
+  BaseEntity,
+  Entity,
+  type Opt,
+  PrimaryKey,
+  Property,
+} from '@mikro-orm/core';
 import { EmployeeRepository } from 'src/modules/employees/employees.repository';
 
 @Entity({ repository: () => EmployeeRepository })
 export class Employees extends BaseEntity {
-  @ManyToOne({
-    entity: () => Users,
-    ref: true,
-    deleteRule: 'cascade',
-    index: 'idx_employees_user_id',
-  })
-  user!: Ref<Users>;
+  @PrimaryKey({ type: 'uuid', defaultRaw: `uuid_generate_v4()` })
+  id!: string & Opt;
 
-  @Property({ nullable: true })
-  dateOfBirth?: string;
+  @Property({
+    length: 20,
+    nullable: true,
+    unique: 'employees_employee_code_key',
+  })
+  employeeCode?: string;
+
+  @Property({ length: 100 })
+  firstName!: string;
+
+  @Property({ length: 100 })
+  lastName!: string;
+
+  @Property({ type: 'date' })
+  dateOfBirth!: string;
+
+  @Property({ length: 50, nullable: true })
+  gender?: string;
 
   @Property({ nullable: true })
   address?: string;
 
   @Property({ length: 20, nullable: true })
-  phone?: string;
+  phoneNumber?: string;
 
-  @Property({ length: 100, nullable: true, index: 'idx_employees_department' })
-  department?: string;
+  @Property({ unique: 'employees_email_key' })
+  email!: string;
 
-  @Property({ length: 100, nullable: true })
-  position?: string;
+  @Property({ type: 'date', nullable: true })
+  hireDate?: string;
+
+  @Property({ type: 'uuid' })
+  departmentId!: string;
+
+  @Property({ type: 'uuid' })
+  positionId!: string;
 
   @Property({ nullable: true })
   contractType?: string;
@@ -37,12 +58,29 @@ export class Employees extends BaseEntity {
   @Property({ type: 'date', nullable: true })
   contractEnd?: string;
 
-  @ManyToOne({
-    entity: () => Users,
-    ref: true,
-    fieldName: 'created_by',
-    deleteRule: 'cascade',
-    index: 'idx_employees_created_by',
+  @Property({ length: 50, nullable: true })
+  bankAccount?: string;
+
+  @Property({ length: 100, nullable: true })
+  bankName?: string;
+
+  @Property({ length: 50, nullable: true })
+  taxCode?: string;
+
+  @Property({
+    columnType: 'timestamp(6)',
+    nullable: true,
+    defaultRaw: `CURRENT_TIMESTAMP`,
   })
-  createdBy!: Ref<Users>;
+  createdAt?: Date;
+
+  @Property({
+    columnType: 'timestamp(6)',
+    nullable: true,
+    defaultRaw: `CURRENT_TIMESTAMP`,
+  })
+  updatedAt?: Date;
+
+  @Property({ type: 'uuid', nullable: true })
+  createdBy?: string;
 }

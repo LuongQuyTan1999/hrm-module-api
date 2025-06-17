@@ -15,23 +15,32 @@ export class EmployeeRepository extends EntityRepository<Employees> {
     const userConditions: Record<string, any> = {};
 
     if (search) {
-      userConditions.fullName = { $ilike: `%${search}%` };
+      userConditions.$or = [
+        { firstName: { $ilike: `%${search}%` } },
+        { lastName: { $ilike: `%${search}%` } },
+        { email: { $ilike: `%${search}%` } },
+        { employeeCode: { $ilike: `%${search}%` } },
+      ];
     }
 
     if (role) {
-      userConditions.role = { $eq: role };
-    }
-
-    if (Object.keys(userConditions).length > 0) {
-      query.user = userConditions;
+      if (Array.isArray(role)) {
+        userConditions.role = { $in: role };
+      } else {
+        userConditions.role = { $eq: role };
+      }
     }
 
     if (department) {
-      query.department = { $ilike: `%${department}%` };
+      if (Array.isArray(department)) {
+        query.departmentId = { $in: department };
+      } else {
+        query.departmentId = department;
+      }
     }
 
     const [items, total] = await this.findAndCount(query, {
-      populate: ['user'],
+      populate: ['departmentId'],
       limit,
       offset: (page - 1) * limit,
       orderBy: { createdAt: 'DESC' },
