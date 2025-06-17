@@ -9,13 +9,17 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { Role } from 'src/common/enum/role.enum';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { EmployeesService } from './employees.service';
-import { Users } from '../../common/db/entities/user.entity';
 import { User } from 'src/common/decorators/user.decorator';
+import { Role } from 'src/common/enum/role.enum';
+import { Users } from '../../common/db/entities/user.entity';
+import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { FindEmployeesDto } from './dto/query.dto';
+import { EmployeesService } from './employees.service';
+
+export class ChatDto {
+  message: string;
+}
 
 @Controller('employees')
 export class EmployeesController {

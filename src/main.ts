@@ -8,6 +8,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    origin: true, // Allows all origins
+    credentials: true,
+  });
+
   // Get the ORM instance
   const orm = app.get(MikroORM);
 

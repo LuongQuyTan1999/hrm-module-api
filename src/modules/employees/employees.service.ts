@@ -1,5 +1,5 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository, EntityManager } from '@mikro-orm/postgresql';
+import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import {
   ForbiddenException,
   Injectable,
@@ -9,8 +9,8 @@ import { Employees } from 'src/common/db/entities/employee.entity';
 import { Users } from 'src/common/db/entities/user.entity';
 import { Role } from 'src/common/enum/role.enum';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { EmployeeRepository } from './employees.repository';
 import { FindEmployeesDto } from './dto/query.dto';
+import { EmployeeRepository } from './employees.repository';
 
 @Injectable()
 export class EmployeesService {
