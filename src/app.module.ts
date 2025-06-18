@@ -5,12 +5,14 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { EmployeesModule } from './modules/employees/employees.module';
+import { DepartmentsModule } from './modules/departments/departments.module';
 
 @Module({
   imports: [
     MikroOrmModule.forRoot(databaseConfig),
     AuthModule,
     EmployeesModule,
+    DepartmentsModule,
   ],
   providers: [
     { provide: 'APP_GUARD', useClass: JwtAuthGuard },
