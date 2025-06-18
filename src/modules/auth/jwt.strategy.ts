@@ -11,6 +11,7 @@ import { Users } from '../../common/db/entities/user.entity';
 interface UserPayload {
   id: string;
   email: string;
+  name: string;
   role: string;
 }
 
@@ -40,6 +41,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
     return {
       id: user.id,
+      name: user.username,
       email: user.employee.getEntity().email,
       role: user.role,
     };
