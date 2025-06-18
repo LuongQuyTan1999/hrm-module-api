@@ -11,7 +11,12 @@ export class FindEmployeesDto extends PaginationDto {
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  department?: string;
+  departmentId?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  positionId?: string;
 
   @IsOptional()
   @IsEnum(Role)

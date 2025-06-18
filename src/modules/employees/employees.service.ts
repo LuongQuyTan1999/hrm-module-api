@@ -14,6 +14,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { FindEmployeesDto } from './dto/query.dto';
 import { EmployeeRepository } from './employees.repository';
 import * as bcrypt from 'bcrypt';
+import { Departments } from 'src/common/db/entities/department.entity';
+import { Positions } from 'src/common/db/entities/position.entity';
 
 @Injectable()
 export class EmployeesService {
@@ -58,6 +60,8 @@ export class EmployeesService {
 
     const employee = this.employeeRepository.create({
       ...body,
+      department: this.em.getReference(Departments, body.departmentId),
+      position: this.em.getReference(Positions, body.positionId),
       createdBy: currentUser.id,
     });
 
@@ -82,7 +86,7 @@ export class EmployeesService {
    */
   async findOne(id: string, currentUser: Users): Promise<Employees> {
     const employee = await this.employeeRepository.findOne(id, {
-      populate: ['departmentId', 'positionId'],
+      populate: ['department', 'position'],
     });
 
     if (!employee) {
@@ -108,7 +112,7 @@ export class EmployeesService {
    */
   async update(id: string, body: CreateEmployeeDto): Promise<Employees> {
     const employee = await this.employeeRepository.findOne(id, {
-      populate: ['departmentId', 'positionId'],
+      populate: ['department', 'position'],
     });
 
     if (!employee) {

@@ -10,7 +10,14 @@ export class EmployeeRepository extends EntityRepository<Employees> {
     pageCount: number;
     limit: number;
   }> {
-    const { search, department, role, page = 1, limit = 10 } = queryParams;
+    const {
+      search,
+      departmentId,
+      positionId,
+      role,
+      page = 1,
+      limit = 10,
+    } = queryParams;
     const query: FilterQuery<Employees> = {};
     const userConditions: Record<string, any> = {};
 
@@ -31,16 +38,16 @@ export class EmployeeRepository extends EntityRepository<Employees> {
       }
     }
 
-    if (department) {
-      if (Array.isArray(department)) {
-        query.departmentId = { $in: department };
-      } else {
-        query.departmentId = department;
-      }
+    if (departmentId) {
+      query.department = departmentId;
+    }
+
+    if (positionId) {
+      query.position = positionId;
     }
 
     const [items, total] = await this.findAndCount(query, {
-      populate: ['departmentId'],
+      populate: ['department', 'position'],
       limit,
       offset: (page - 1) * limit,
       orderBy: { createdAt: 'DESC' },

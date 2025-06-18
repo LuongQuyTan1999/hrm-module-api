@@ -7,8 +7,9 @@ import {
   Property,
   type Ref,
 } from '@mikro-orm/core';
-import { EmployeeRepository } from 'src/modules/employees/employees.repository';
 import { Departments } from './department.entity';
+import { Positions } from './position.entity';
+import { EmployeeRepository } from 'src/modules/employees/employees.repository';
 
 @Entity({ repository: () => EmployeeRepository })
 export class Employees extends BaseEntity {
@@ -53,8 +54,12 @@ export class Employees extends BaseEntity {
   })
   department!: Ref<Departments>;
 
-  @Property({ type: 'uuid' })
-  positionId!: string;
+  @ManyToOne({
+    entity: () => Positions,
+    ref: true,
+    index: 'idx_employees_position_id',
+  })
+  position!: Ref<Positions>;
 
   @Property({ nullable: true })
   contractType?: string;
