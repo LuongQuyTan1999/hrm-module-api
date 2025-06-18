@@ -1,11 +1,14 @@
 import {
   BaseEntity,
   Entity,
+  ManyToOne,
   type Opt,
   PrimaryKey,
   Property,
+  type Ref,
 } from '@mikro-orm/core';
 import { EmployeeRepository } from 'src/modules/employees/employees.repository';
+import { Departments } from './department.entity';
 
 @Entity({ repository: () => EmployeeRepository })
 export class Employees extends BaseEntity {
@@ -43,8 +46,12 @@ export class Employees extends BaseEntity {
   @Property({ type: 'date', nullable: true })
   hireDate?: string;
 
-  @Property({ type: 'uuid' })
-  departmentId!: string;
+  @ManyToOne({
+    entity: () => Departments,
+    ref: true,
+    index: 'idx_employees_department_id',
+  })
+  department!: Ref<Departments>;
 
   @Property({ type: 'uuid' })
   positionId!: string;
