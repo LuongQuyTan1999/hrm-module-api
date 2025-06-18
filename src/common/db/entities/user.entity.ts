@@ -46,4 +46,7 @@ export class Users {
     defaultRaw: `CURRENT_TIMESTAMP`,
   })
   updatedAt?: Date;
+
+  @Property({ type: 'string', length: 20 })
+  status: string & Opt = 'active';
 }

@@ -16,294 +16,54 @@
           "default": "uuid_generate_v4()",
           "mappedType": "uuid"
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(6)",
+        "employee_code": {
+          "name": "employee_code",
+          "type": "varchar(20)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
+          "length": 20,
           "mappedType": "string"
         },
-        "password": {
-          "name": "password",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "full_name": {
-          "name": "full_name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "role": {
-          "name": "role",
-          "type": "varchar(50)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 50,
-          "mappedType": "string"
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "default": "true",
-          "mappedType": "boolean"
-        }
-      },
-      "name": "users",
-      "schema": "public",
-      "indexes": [
-        {
-          "columnNames": [
-            "email"
-          ],
-          "composite": false,
-          "keyName": "idx_users_email",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "email"
-          ],
-          "composite": false,
-          "keyName": "users_email_key",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "role"
-          ],
-          "composite": false,
-          "keyName": "idx_users_role",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "keyName": "users_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "uuid_generate_v4()",
-          "mappedType": "uuid"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "skill_name": {
-          "name": "skill_name",
+        "first_name": {
+          "name": "first_name",
           "type": "varchar(100)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "length": 100,
           "mappedType": "string"
         },
-        "proficiency": {
-          "name": "proficiency",
-          "type": "varchar(255)",
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar(100)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
-          "length": 255,
+          "nullable": false,
+          "length": 100,
           "mappedType": "string"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        }
-      },
-      "name": "skills",
-      "schema": "public",
-      "indexes": [
-        {
-          "columnNames": [
-            "user_id"
-          ],
-          "composite": false,
-          "keyName": "idx_skills_user_id",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "skill_name"
-          ],
-          "composite": false,
-          "keyName": "idx_skills_skill_name",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "keyName": "skills_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "skills_user_id_foreign": {
-          "constraintName": "skills_user_id_foreign",
-          "columnNames": [
-            "user_id"
-          ],
-          "localTableName": "public.skills",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.users",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "uuid_generate_v4()",
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
         },
         "date_of_birth": {
           "name": "date_of_birth",
-          "type": "varchar(255)",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "date"
+        },
+        "gender": {
+          "name": "gender",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 255,
+          "length": 50,
           "mappedType": "string"
         },
         "address": {
@@ -316,8 +76,8 @@
           "length": 255,
           "mappedType": "string"
         },
-        "phone": {
-          "name": "phone",
+        "phone_number": {
+          "name": "phone_number",
           "type": "varchar(20)",
           "unsigned": false,
           "autoincrement": false,
@@ -326,25 +86,43 @@
           "length": 20,
           "mappedType": "string"
         },
-        "department": {
-          "name": "department",
-          "type": "varchar(100)",
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
-          "length": 100,
+          "nullable": false,
+          "length": 255,
           "mappedType": "string"
         },
-        "position": {
-          "name": "position",
-          "type": "varchar(100)",
+        "hire_date": {
+          "name": "hire_date",
+          "type": "date",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 100,
-          "mappedType": "string"
+          "length": 0,
+          "mappedType": "date"
+        },
+        "department_id": {
+          "name": "department_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "position_id": {
+          "name": "position_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
         },
         "contract_type": {
           "name": "contract_type",
@@ -376,13 +154,65 @@
           "length": 0,
           "mappedType": "date"
         },
+        "bank_account": {
+          "name": "bank_account",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "bank_name": {
+          "name": "bank_name",
+          "type": "varchar(100)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 100,
+          "mappedType": "string"
+        },
+        "tax_code": {
+          "name": "tax_code",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        },
         "created_by": {
           "name": "created_by",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "uuid"
         }
       },
@@ -391,33 +221,23 @@
       "indexes": [
         {
           "columnNames": [
-            "user_id"
+            "employee_code"
           ],
           "composite": false,
-          "keyName": "idx_employees_user_id",
-          "constraint": false,
+          "keyName": "employees_employee_code_key",
+          "constraint": true,
           "primary": false,
-          "unique": false
+          "unique": true
         },
         {
           "columnNames": [
-            "department"
+            "email"
           ],
           "composite": false,
-          "keyName": "idx_employees_department",
-          "constraint": false,
+          "keyName": "employees_email_key",
+          "constraint": true,
           "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "created_by"
-          ],
-          "composite": false,
-          "keyName": "idx_employees_created_by",
-          "constraint": false,
-          "primary": false,
-          "unique": false
+          "unique": true
         },
         {
           "keyName": "employees_pkey",
@@ -431,34 +251,7 @@
         }
       ],
       "checks": [],
-      "foreignKeys": {
-        "employees_user_id_foreign": {
-          "constraintName": "employees_user_id_foreign",
-          "columnNames": [
-            "user_id"
-          ],
-          "localTableName": "public.employees",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.users",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        },
-        "employees_created_by_foreign": {
-          "constraintName": "employees_created_by_foreign",
-          "columnNames": [
-            "created_by"
-          ],
-          "localTableName": "public.employees",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.users",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      },
+      "foreignKeys": {},
       "nativeEnums": {}
     },
     {
@@ -473,8 +266,8 @@
           "default": "uuid_generate_v4()",
           "mappedType": "uuid"
         },
-        "user_id": {
-          "name": "user_id",
+        "employee_id": {
+          "name": "employee_id",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -482,45 +275,45 @@
           "nullable": false,
           "mappedType": "uuid"
         },
-        "certificate_name": {
-          "name": "certificate_name",
+        "password": {
+          "name": "password",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "length": 255,
           "mappedType": "string"
         },
-        "issuer": {
-          "name": "issuer",
+        "username": {
+          "name": "username",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "length": 255,
           "mappedType": "string"
         },
-        "issue_date": {
-          "name": "issue_date",
-          "type": "date",
+        "role": {
+          "name": "role",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
-          "length": 0,
-          "mappedType": "date"
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
         },
-        "expiry_date": {
-          "name": "expiry_date",
-          "type": "date",
+        "last_login": {
+          "name": "last_login",
+          "type": "timestamp(6)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 0,
-          "mappedType": "date"
+          "length": 6,
+          "mappedType": "datetime"
         },
         "created_at": {
           "name": "created_at",
@@ -545,21 +338,21 @@
           "mappedType": "datetime"
         }
       },
-      "name": "certificates",
+      "name": "users",
       "schema": "public",
       "indexes": [
         {
           "columnNames": [
-            "user_id"
+            "employee_id"
           ],
           "composite": false,
-          "keyName": "idx_certificates_user_id",
-          "constraint": false,
+          "keyName": "idx_users_employee_id_unique",
+          "constraint": true,
           "primary": false,
-          "unique": false
+          "unique": true
         },
         {
-          "keyName": "certificates_pkey",
+          "keyName": "users_pkey",
           "columnNames": [
             "id"
           ],
@@ -571,151 +364,16 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "certificates_user_id_foreign": {
-          "constraintName": "certificates_user_id_foreign",
+        "users_employee_id_foreign": {
+          "constraintName": "users_employee_id_foreign",
           "columnNames": [
-            "user_id"
+            "employee_id"
           ],
-          "localTableName": "public.certificates",
+          "localTableName": "public.users",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.users",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "uuid_generate_v4()",
-          "mappedType": "uuid"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "company": {
-          "name": "company",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "position": {
-          "name": "position",
-          "type": "varchar(100)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 100,
-          "mappedType": "string"
-        },
-        "start_date": {
-          "name": "start_date",
-          "type": "date",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 0,
-          "mappedType": "date"
-        },
-        "end_date": {
-          "name": "end_date",
-          "type": "date",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 0,
-          "mappedType": "date"
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        }
-      },
-      "name": "work_history",
-      "schema": "public",
-      "indexes": [
-        {
-          "columnNames": [
-            "user_id"
-          ],
-          "composite": false,
-          "keyName": "idx_work_history_user_id",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "keyName": "work_history_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "work_history_user_id_foreign": {
-          "constraintName": "work_history_user_id_foreign",
-          "columnNames": [
-            "user_id"
-          ],
-          "localTableName": "public.work_history",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.users",
+          "referencedTableName": "public.employees",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         }
