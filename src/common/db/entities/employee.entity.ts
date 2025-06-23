@@ -21,7 +21,7 @@ export class Employees extends BaseEntity {
     nullable: true,
     unique: 'employees_employee_code_key',
   })
-  employeeCode?: string;
+  employeeCode: string;
 
   @Property({ length: 100 })
   firstName!: string;

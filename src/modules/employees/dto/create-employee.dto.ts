@@ -10,10 +10,6 @@ import {
 export class CreateEmployeeDto {
   @IsString()
   @IsNotEmpty()
-  employeeCode: string;
-
-  @IsString()
-  @IsNotEmpty()
   firstName: string;
 
   @IsString()

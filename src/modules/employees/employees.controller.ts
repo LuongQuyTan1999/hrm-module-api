@@ -17,6 +17,7 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FindEmployeesDto } from './dto/query.dto';
 import { EmployeesService } from './employees.service';
+import { UpdateEmployeeDto } from './dto/update-employee.dto';
 
 export class ChatDto {
   message: string;
@@ -45,7 +46,7 @@ export class EmployeesController {
 
   @Put(':id')
   @Roles(Role.ADMIN)
-  async update(@Param('id') id: string, @Body() body: CreateEmployeeDto) {
+  async update(@Param('id') id: string, @Body() body: UpdateEmployeeDto) {
     return this.employeesService.update(id, body);
   }
 

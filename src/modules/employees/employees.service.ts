@@ -16,6 +16,7 @@ import { EmployeeRepository } from './employees.repository';
 import * as bcrypt from 'bcrypt';
 import { Departments } from 'src/common/db/entities/department.entity';
 import { Positions } from 'src/common/db/entities/position.entity';
+import { UpdateEmployeeDto } from './dto/update-employee.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -42,14 +43,7 @@ export class EmployeesService {
     }
 
     const existingEmployee = await this.employeeRepository.findOne({
-      $or: [
-        {
-          employeeCode: body.employeeCode,
-        },
-        {
-          email: body.email,
-        },
-      ],
+      email: body.email,
     });
 
     if (existingEmployee) {
@@ -58,8 +52,11 @@ export class EmployeesService {
       );
     }
 
+    const employeeCode = await this.generateEmployeeCode();
+
     const employee = this.employeeRepository.create({
       ...body,
+      employeeCode,
       department: this.em.getReference(Departments, body.departmentId),
       position: this.em.getReference(Positions, body.positionId),
       createdBy: currentUser.id,
@@ -110,10 +107,8 @@ export class EmployeesService {
    * @param body - Information to update
    * @returns Employee profile updated
    */
-  async update(id: string, body: CreateEmployeeDto): Promise<Employees> {
-    const employee = await this.employeeRepository.findOne(id, {
-      populate: ['department', 'position'],
-    });
+  async update(id: string, body: UpdateEmployeeDto): Promise<Employees> {
+    const employee = await this.employeeRepository.findOne(id);
 
     if (!employee) {
       throw new NotFoundException('Hồ sơ nhân viên không tồn tại');
@@ -172,5 +167,21 @@ export class EmployeesService {
 
     await this.em.persistAndFlush(user);
     return user;
+  }
+
+  private async generateEmployeeCode(): Promise<string> {
+    const lastEmployee = await this.employeeRepository.findOne(
+      { employeeCode: { $ne: null } },
+      { orderBy: { createdAt: 'DESC' } },
+    );
+
+    if (!lastEmployee) {
+      return 'ZW0001';
+    }
+
+    const lastCode = lastEmployee.employeeCode;
+    const codeNumber = parseInt(lastCode.replace('ZW', ''), 10);
+    const newCodeNumber = codeNumber + 1;
+    return `ZW${newCodeNumber.toString().padStart(4, '0')}`;
   }
 }
