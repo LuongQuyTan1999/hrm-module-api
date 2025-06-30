@@ -37,4 +37,13 @@ export class Positions {
     defaultRaw: `CURRENT_TIMESTAMP`,
   })
   updatedAt?: Date;
+
+  @Property({ length: 50, nullable: true })
+  level?: string;
+
+  @Property({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  minSalary?: number;
+
+  @Property({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  maxSalary?: number;
 }

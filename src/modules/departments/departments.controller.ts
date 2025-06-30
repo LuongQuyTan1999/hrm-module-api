@@ -30,6 +30,11 @@ export class DepartmentsController {
     return this.departmentsService.findAll(query);
   }
 
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.departmentsService.findOne(id);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() body: UpdateDepartmentDto) {
     return this.departmentsService.update(id, body);

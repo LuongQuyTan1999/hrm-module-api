@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Entity,
   ManyToOne,
+  OneToOne,
   type Opt,
   PrimaryKey,
   Property,
@@ -10,6 +11,7 @@ import {
 import { Departments } from './department.entity';
 import { Positions } from './position.entity';
 import { EmployeeRepository } from 'src/modules/employees/employees.repository';
+import { Users } from './user.entity';
 
 @Entity({ repository: () => EmployeeRepository })
 export class Employees extends BaseEntity {
@@ -60,6 +62,14 @@ export class Employees extends BaseEntity {
     index: 'idx_employees_position_id',
   })
   position!: Ref<Positions>;
+
+  @OneToOne({
+    entity: () => Users,
+    mappedBy: 'employee',
+    ref: true,
+    nullable: true,
+  })
+  user?: Ref<Users>;
 
   @Property({ nullable: true })
   contractType?: string;

@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreatePositionDto {
   @IsString()
@@ -12,4 +18,13 @@ export class CreatePositionDto {
   @IsString()
   @IsUUID()
   departmentId: string;
+
+  @IsNumber()
+  minSalary: number;
+
+  @IsNumber()
+  maxSalary: number;
+
+  @IsString()
+  level: string; // e.g., 'Junior', 'Mid', 'Senior', 'Lead', 'Manager', 'Director';
 }

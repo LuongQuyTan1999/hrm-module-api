@@ -83,7 +83,7 @@ export class EmployeesService {
    */
   async findOne(id: string, currentUser: Users): Promise<Employees> {
     const employee = await this.employeeRepository.findOne(id, {
-      populate: ['department', 'position'],
+      populate: ['department', 'position', 'user'],
     });
 
     if (!employee) {

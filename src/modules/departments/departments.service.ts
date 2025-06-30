@@ -1,19 +1,15 @@
 // src/modules/departments/departments.service.ts
 import { InjectRepository } from '@mikro-orm/nestjs';
-import {
-  EntityManager,
-  EntityRepository,
-  FilterQuery,
-} from '@mikro-orm/postgresql';
+import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import {
   BadRequestException,
   ConflictException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { Departments } from 'src/common/db/entities/department.entity';
 import { Employees } from 'src/common/db/entities/employee.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { DepartmentsRepository } from './departments.repository';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 
@@ -21,14 +17,13 @@ import { UpdateDepartmentDto } from './dto/update-department.dto';
 export class DepartmentsService {
   constructor(
     @InjectRepository(Departments)
-    private readonly departmentRepository: EntityRepository<Departments>,
+    private readonly departmentRepository: DepartmentsRepository,
     @InjectRepository(Employees)
     private readonly employeeRepository: EntityRepository<Employees>,
     private readonly em: EntityManager,
   ) {}
 
   async create(body: CreateDepartmentDto): Promise<Departments> {
-    // ✅ Check duplicate name
     await this.validateUniqueName(body.name);
 
     const department = this.departmentRepository.create({
@@ -51,36 +46,14 @@ export class DepartmentsService {
     limit: number;
     pageCount: number;
   }> {
-    const { name, page = 1, limit = 10 } = queryParams;
-    const query: FilterQuery<Departments> = {};
+    const departments =
+      await this.departmentRepository.findAllAndPaginate(queryParams);
 
-    if (name) {
-      query.name = { $ilike: `%${name}%` };
-    }
-
-    const [items, total] = await this.departmentRepository.findAndCount(query, {
-      limit: Math.min(limit, 100),
-      offset: (page - 1) * limit,
-      orderBy: { name: 'ASC' },
-    });
-
-    return {
-      items,
-      total,
-      page: Number(page),
-      limit: Number(limit),
-      pageCount: Math.ceil(total / limit),
-    };
+    return departments;
   }
 
   async findOne(id: string): Promise<Departments> {
-    const department = await this.departmentRepository.findOne({ id });
-
-    if (!department) {
-      throw new NotFoundException(`Phòng ban với ID '${id}' không tồn tại`);
-    }
-
-    return department;
+    return this.departmentRepository.findOneWithEmployeeCount(id);
   }
 
   async findByName(name: string): Promise<Departments | null> {

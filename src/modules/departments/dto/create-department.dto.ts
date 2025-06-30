@@ -6,4 +6,13 @@ export class CreateDepartmentDto {
 
   @IsString()
   description: string;
+
+  @IsString()
+  color: string;
+
+  @IsString()
+  managerName: string;
+
+  @IsString()
+  managerEmail: string;
 }

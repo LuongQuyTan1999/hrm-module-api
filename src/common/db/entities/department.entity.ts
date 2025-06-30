@@ -5,8 +5,9 @@ import {
   Property,
   Unique,
 } from '@mikro-orm/core';
+import { DepartmentsRepository } from 'src/modules/departments/departments.repository';
 
-@Entity()
+@Entity({ repository: () => DepartmentsRepository })
 export class Departments {
   @PrimaryKey({ type: 'uuid', defaultRaw: `uuid_generate_v4()` })
   id!: string & Opt;
@@ -31,4 +32,16 @@ export class Departments {
     defaultRaw: `CURRENT_TIMESTAMP`,
   })
   updatedAt?: Date;
+
+  @Property({ type: 'string', length: 20 })
+  color: string & Opt = 'blue';
+
+  @Property({ length: 100, nullable: true })
+  managerName?: string;
+
+  @Property({ length: 100, nullable: true })
+  managerEmail?: string;
+
+  @Property({ type: 'numeric', nullable: true, default: 0 })
+  employeeCount?: number;
 }

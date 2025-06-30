@@ -47,7 +47,7 @@ export class EmployeeRepository extends EntityRepository<Employees> {
     }
 
     const [items, total] = await this.findAndCount(query, {
-      populate: ['department', 'position'],
+      populate: ['department', 'position', 'user'],
       limit,
       offset: (page - 1) * limit,
       orderBy: { createdAt: 'DESC' },
