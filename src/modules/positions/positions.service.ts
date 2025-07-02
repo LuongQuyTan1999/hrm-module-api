@@ -1,27 +1,23 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
-import {
-  EntityManager,
-  EntityRepository,
-  FilterQuery,
-} from '@mikro-orm/postgresql';
+import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import {
   BadRequestException,
   ForbiddenException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { Departments } from 'src/common/db/entities/department.entity';
+import { Employees } from 'src/common/db/entities/employee.entity';
 import { Positions } from 'src/common/db/entities/position.entity';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { Employees } from 'src/common/db/entities/employee.entity';
+import { PositionsRepository } from './positions.repository';
 
 @Injectable()
 export class PositionsService {
   constructor(
     @InjectRepository(Positions)
-    private readonly positionRepository: EntityRepository<Positions>,
+    private readonly positionRepository: PositionsRepository,
     @InjectRepository(Employees)
     private readonly employeeRepository: EntityRepository<Employees>,
     private readonly em: EntityManager,
@@ -51,40 +47,21 @@ export class PositionsService {
     limit: number;
     pageCount: number;
   }> {
-    const { name, page = 1, limit = 10 } = queryParams;
-    const query: FilterQuery<Positions> = {};
+    const positions = this.positionRepository.findAllAndPaginate(queryParams);
 
-    if (name) {
-      query.name = { $ilike: `%${name}%` };
-    }
-
-    const [items, total] = await this.positionRepository.findAndCount(query, {
-      limit: Math.min(limit, 100),
-      offset: (page - 1) * limit,
-      orderBy: { name: 'ASC' },
-    });
-
-    return {
-      items,
-      total,
-      page,
-      limit: Math.min(limit, 100),
-      pageCount: Math.ceil(total / limit),
-    };
+    return positions;
   }
 
   async findOne(id: string): Promise<Positions> {
-    const position = await this.positionRepository.findOne({ id });
-
-    if (!position) {
-      throw new NotFoundException(`Vị trí với ID ${id} không tồn tại`);
-    }
-
-    return position;
+    return this.positionRepository.findOneWithEmployeeCount(id);
   }
 
   async update(id: string, body: UpdatePositionDto): Promise<Positions> {
-    const position = await this.findOne(id);
+    const position = await this.positionRepository.findOne(id);
+
+    if (!position) {
+      throw new BadRequestException(`Không tìm thấy vị trí với ID ${id}`);
+    }
 
     if (body.name && body.name !== position.name) {
       await this.validateUniqueName(body.name);
@@ -98,7 +75,11 @@ export class PositionsService {
   }
 
   async delete(id: string): Promise<{ message: string }> {
-    const position = await this.findOne(id);
+    const position = await this.positionRepository.findOne(id);
+
+    if (!position) {
+      throw new BadRequestException(`Không tìm thấy vị trí với ID ${id}`);
+    }
 
     await this.validatePositionCanBeDeleted(id);
 

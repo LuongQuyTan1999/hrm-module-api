@@ -56,6 +56,37 @@
           "length": 6,
           "default": "CURRENT_TIMESTAMP",
           "mappedType": "datetime"
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar(20)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 20,
+          "default": "'blue'",
+          "mappedType": "string"
+        },
+        "manager_name": {
+          "name": "manager_name",
+          "type": "varchar(100)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 100,
+          "mappedType": "string"
+        },
+        "manager_email": {
+          "name": "manager_email",
+          "type": "varchar(100)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 100,
+          "mappedType": "string"
         }
       },
       "name": "departments",
@@ -157,6 +188,38 @@
           "length": 6,
           "default": "CURRENT_TIMESTAMP",
           "mappedType": "datetime"
+        },
+        "level": {
+          "name": "level",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "min_salary": {
+          "name": "min_salary",
+          "type": "numeric(10,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "max_salary": {
+          "name": "max_salary",
+          "type": "numeric(10,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         }
       },
       "name": "positions",

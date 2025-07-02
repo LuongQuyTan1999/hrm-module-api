@@ -61,7 +61,11 @@ export class DepartmentsService {
   }
 
   async update(id: string, body: UpdateDepartmentDto): Promise<Departments> {
-    const department = await this.findOne(id);
+    const department = await this.departmentRepository.findOne(id);
+
+    if (!department) {
+      throw new BadRequestException(`Phòng ban không tồn tại`);
+    }
 
     if (body.name && body.name !== department.name) {
       await this.validateUniqueName(body.name);
@@ -75,7 +79,11 @@ export class DepartmentsService {
   }
 
   async delete(id: string): Promise<{ message: string }> {
-    const department = await this.findOne(id);
+    const department = await this.departmentRepository.findOne(id);
+
+    if (!department) {
+      throw new BadRequestException(`Phòng ban không tồn tại`);
+    }
 
     await this.validateDepartmentCanBeDeleted(id);
 

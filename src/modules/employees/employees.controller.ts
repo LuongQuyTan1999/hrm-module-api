@@ -56,7 +56,7 @@ export class EmployeesController {
     return this.employeesService.delete(id);
   }
 
-  @Post(':id/users')
+  @Post(':id/create-account')
   @Roles(Role.ADMIN)
   async createUser(
     @Param('id') employeeId: string,

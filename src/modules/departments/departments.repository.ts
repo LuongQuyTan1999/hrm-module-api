@@ -55,7 +55,9 @@ export class DepartmentsRepository extends EntityRepository<Departments> {
     };
   }
 
-  async findOneWithEmployeeCount(id: string): Promise<Departments> {
+  async findOneWithEmployeeCount(
+    id: string,
+  ): Promise<Departments & { employeeCount: number }> {
     const query = `
       SELECT d.*, COUNT(e.id)::int as employee_count
       FROM departments d

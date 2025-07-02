@@ -41,7 +41,4 @@ export class Departments {
 
   @Property({ length: 100, nullable: true })
   managerEmail?: string;
-
-  @Property({ type: 'numeric', nullable: true, default: 0 })
-  employeeCount?: number;
 }

@@ -8,8 +8,9 @@ import {
   Unique,
 } from '@mikro-orm/core';
 import { Departments } from './department.entity';
+import { PositionsRepository } from 'src/modules/positions/positions.repository';
 
-@Entity()
+@Entity({ repository: () => PositionsRepository })
 export class Positions {
   @PrimaryKey({ type: 'uuid', defaultRaw: `uuid_generate_v4()` })
   id!: string & Opt;
