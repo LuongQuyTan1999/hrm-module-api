@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { EmployeesModule } from './modules/employees/employees.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { PositionsModule } from './modules/positions/positions.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PositionsModule } from './modules/positions/positions.module';
     EmployeesModule,
     DepartmentsModule,
     PositionsModule,
+    AttendanceModule,
   ],
   providers: [
     { provide: 'APP_GUARD', useClass: JwtAuthGuard },
