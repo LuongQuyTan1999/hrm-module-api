@@ -43,8 +43,8 @@ export class Positions {
   level?: string;
 
   @Property({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  minSalary?: number;
+  minSalary?: string;
 
   @Property({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  maxSalary?: number;
+  maxSalary?: string;
 }
