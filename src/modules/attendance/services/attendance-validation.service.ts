@@ -30,31 +30,6 @@ export class AttendanceValidationService {
     return leaveRequest;
   }
 
-  async validateLeaveBalance(
-    employeeId: string,
-    leaveType: string,
-    daysRequested: number,
-  ): Promise<LeaveBalances> {
-    const leaveBalance = await this.leaveBalancesRepository.findOne({
-      employee: employeeId,
-      leaveType,
-    });
-
-    if (!leaveBalance) {
-      throw new NotFoundException(
-        `Leave balance for employee ${employeeId} and leave type ${leaveType} not found`,
-      );
-    }
-
-    if (Number(leaveBalance.balanceDays) < daysRequested) {
-      throw new BadRequestException(
-        `Insufficient leave balance. Required: ${daysRequested} days, Available: ${leaveBalance.balanceDays} days`,
-      );
-    }
-
-    return leaveBalance;
-  }
-
   async validateUniqueLeaveBalance(
     employeeId: string,
     leaveType: string,

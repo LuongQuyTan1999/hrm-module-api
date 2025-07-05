@@ -45,43 +45,4 @@ export class LeaveBalanceService {
 
     return leaveBalances;
   }
-
-  async deductBalance(
-    employeeId: string,
-    leaveType: string,
-    days: number,
-  ): Promise<LeaveBalances> {
-    const leaveBalance = await this.validationService.validateLeaveBalance(
-      employeeId,
-      leaveType,
-      days,
-    );
-
-    leaveBalance.balanceDays = String(Number(leaveBalance.balanceDays) - days);
-
-    await this.em.persistAndFlush(leaveBalance);
-    return leaveBalance;
-  }
-
-  async restoreBalance(
-    employeeId: string,
-    leaveType: string,
-    days: number,
-  ): Promise<LeaveBalances> {
-    const leaveBalance = await this.leaveBalancesRepository.findOne({
-      employee: employeeId,
-      leaveType,
-    });
-
-    if (!leaveBalance) {
-      throw new Error(
-        `Leave balance not found for employee ${employeeId} and leave type ${leaveType}`,
-      );
-    }
-
-    leaveBalance.balanceDays = String(Number(leaveBalance.balanceDays) + days);
-    await this.em.persistAndFlush(leaveBalance);
-
-    return leaveBalance;
-  }
 }
