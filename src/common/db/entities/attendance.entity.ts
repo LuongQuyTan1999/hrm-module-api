@@ -1,6 +1,5 @@
 import {
   Entity,
-  Enum,
   ManyToOne,
   OneToOne,
   type Opt,
@@ -24,14 +23,24 @@ export class Attendance {
   })
   employee!: Ref<Employees>;
 
+  @ManyToOne({
+    entity: () => ShiftConfigurations,
+    ref: true,
+    deleteRule: 'set null',
+    nullable: true,
+  })
+  shift?: Ref<ShiftConfigurations>;
+
   @Property({ columnType: 'timestamp(6)' })
   checkIn!: Date;
 
   @Property({ columnType: 'timestamp(6)', nullable: true })
   checkOut?: Date;
 
-  @Enum({ items: () => AttendanceStatus })
-  status!: AttendanceStatus;
+  @Property({
+    length: 20,
+  })
+  status?: string;
 
   @Property()
   location!: string;
@@ -50,14 +59,6 @@ export class Attendance {
   })
   updatedAt?: Date;
 
-  @ManyToOne({
-    entity: () => ShiftConfigurations,
-    ref: true,
-    deleteRule: 'set null',
-    nullable: true,
-  })
-  shift?: Ref<ShiftConfigurations>;
-
   @Property({
     type: 'decimal',
     precision: 5,
@@ -66,11 +67,4 @@ export class Attendance {
     defaultRaw: `0.0`,
   })
   overtimeHours?: string;
-}
-
-export enum AttendanceStatus {
-  PRESENT = 'present',
-  ABSENT = 'absent',
-  LATE = 'late',
-  ON_LEAVE = 'on_leave',
 }

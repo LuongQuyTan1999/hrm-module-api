@@ -3,12 +3,10 @@ import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { Employees } from 'src/common/db/entities/employee.entity';
 import { LeaveRequests } from 'src/common/db/entities/leaverequest.entity';
-import { DateUtils } from 'src/common/utils/date.utils';
 import { EmployeeValidationService } from 'src/modules/employees/services/employee-validation.service';
 import { RequestDto } from '../dto/attendance.dto';
 import { AttendanceQueryDto } from '../dto/query.dto';
 import { AttendanceValidationService } from './attendance-validation.service';
-import { LeaveBalanceService } from './leave-balance.service';
 
 @Injectable()
 export class LeaveRequestService {
@@ -17,7 +15,6 @@ export class LeaveRequestService {
     private readonly leaveRequestsRepository: EntityRepository<LeaveRequests>,
     private readonly em: EntityManager,
     private readonly validationService: AttendanceValidationService,
-    private readonly leaveBalanceService: LeaveBalanceService,
     private readonly employeeValidationService: EmployeeValidationService,
   ) {}
 
@@ -28,14 +25,10 @@ export class LeaveRequestService {
 
     this.validationService.validateDateRange(body.startDate, body.endDate);
 
-    const daysRequested = DateUtils.calculateDays(body.startDate, body.endDate);
-
-    await this.validationService.validateLeaveBalance(
-      body.employeeId,
-      body.leaveType,
-      daysRequested,
-    );
-
+    // Triggers will handle balance changes
+    // - Balance validation
+    // - Overlap checking
+    // - Balance deduction (if approved)
     const leaveRequest = this.leaveRequestsRepository.create({
       ...body,
       employee: this.em.getReference(Employees, body.employeeId),
@@ -49,33 +42,7 @@ export class LeaveRequestService {
     const leaveRequest =
       await this.validationService.validateLeaveRequestExists(id);
 
-    const daysRequested = DateUtils.calculateDays(
-      leaveRequest.startDate,
-      leaveRequest.endDate,
-    );
-
-    // Handle status change to approved
-    if (body.status === 'approved' && leaveRequest.status !== 'approved') {
-      await this.leaveBalanceService.deductBalance(
-        leaveRequest.employee.id,
-        leaveRequest.leaveType,
-        daysRequested,
-      );
-    }
-
-    // Handle status change from approved to rejected/cancelled
-    if (
-      body.status &&
-      body.status !== 'approved' &&
-      leaveRequest.status === 'approved'
-    ) {
-      await this.leaveBalanceService.restoreBalance(
-        leaveRequest.employee.id,
-        leaveRequest.leaveType,
-        daysRequested,
-      );
-    }
-
+    // Triggers will handle balance changes
     Object.assign(leaveRequest, body);
     await this.em.persistAndFlush(leaveRequest);
 

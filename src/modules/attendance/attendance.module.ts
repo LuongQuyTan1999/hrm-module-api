@@ -9,10 +9,19 @@ import { AttendanceValidationService } from './services/attendance-validation.se
 import { LeaveBalanceService } from './services/leave-balance.service';
 import { LeaveRequestService } from './services/leave-request.service';
 import { EmployeesModule } from '../employees/employees.module';
+import { RecordService } from './services/record.service';
+import { Attendance } from 'src/common/db/entities/attendance.entity';
+import { AuditLogs } from 'src/common/db/entities/auditlog.entity';
 
 @Module({
   imports: [
-    MikroOrmModule.forFeature([LeaveBalances, LeaveRequests, Employees]),
+    MikroOrmModule.forFeature([
+      LeaveBalances,
+      LeaveRequests,
+      Employees,
+      Attendance,
+      AuditLogs,
+    ]),
     EmployeesModule,
   ],
   controllers: [AttendanceController],
@@ -21,6 +30,7 @@ import { EmployeesModule } from '../employees/employees.module';
     AttendanceValidationService,
     LeaveBalanceService,
     LeaveRequestService,
+    RecordService,
   ],
 })
 export class AttendanceModule {}

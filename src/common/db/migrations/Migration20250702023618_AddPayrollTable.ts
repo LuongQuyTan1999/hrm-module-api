@@ -13,6 +13,7 @@ export class Migration20250702023618_AddPayrollTable extends Migration {
         bonuses NUMERIC(10, 2) DEFAULT 0,
         deductions NUMERIC(10, 2) DEFAULT 0,
         net_salary NUMERIC(10, 2) NOT NULL,
+        advance_amount NUMERIC(15, 2) DEFAULT 0,
         payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -21,7 +22,7 @@ export class Migration20250702023618_AddPayrollTable extends Migration {
         FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
       );
 
-      CREATE UNIQUE INDEX idx_payroll_employee_id ON payroll(employee_id);
+      CREATE INDEX idx_payroll_employee_id ON payroll(employee_id);
     `);
   }
 

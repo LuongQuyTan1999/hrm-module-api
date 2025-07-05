@@ -8,8 +8,8 @@ export class Migration20250702022726_AddAttendanceTable extends Migration {
         employee_id UUID NOT NULL,
         check_in TIMESTAMP NOT NULL,
         check_out TIMESTAMP,
-        status VARCHAR(20) NOT NULL CHECK (status IN ('present', 'absent', 'late', 'on_leave')),
-        shift_type VARCHAR(50) NOT NULL, -- will replace to shift_id in future migrations
+        status VARCHAR(20) NOT NULL,
+        overtime_hours DECIMAL(5,2) DEFAULT 0.0,
         location VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -18,7 +18,7 @@ export class Migration20250702022726_AddAttendanceTable extends Migration {
         FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
       );
 
-      CREATE UNIQUE INDEX idx_attendance_employee_id ON attendance(employee_id);
+      CREATE INDEX idx_attendance_employee_id ON attendance(employee_id);
     `);
   }
 

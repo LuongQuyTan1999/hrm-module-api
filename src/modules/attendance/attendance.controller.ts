@@ -1,9 +1,14 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enum/role.enum';
 import { AttendanceService } from './attendance.service';
-import { CreateLeaveBalanceDto, RequestDto } from './dto/attendance.dto';
+import {
+  CreateLeaveBalanceDto,
+  RecordDto,
+  RequestDto,
+} from './dto/attendance.dto';
 import { AttendanceQueryDto } from './dto/query.dto';
+import { Users } from 'src/common/db/entities/user.entity';
 
 @Controller('attendance')
 export class AttendanceController {
@@ -46,5 +51,10 @@ export class AttendanceController {
   @Roles(Role.ADMIN, Role.MANAGER)
   getLeaveBalance(@Param('employeeId') employeeId: string) {
     return this.attendanceService.getLeaveBalance(employeeId);
+  }
+
+  @Post('record-attendance')
+  recordAttendance(@Body() body: RecordDto, @Req() req: { user: Users }) {
+    return this.attendanceService.recordAttendance(body, req.user);
   }
 }

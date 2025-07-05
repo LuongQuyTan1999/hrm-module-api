@@ -15,12 +15,11 @@ export class Migration20250704042656_AddShiftConfigurationsTable extends Migrati
       );
 
       ALTER TABLE attendance
-      ADD COLUMN shift_id UUID REFERENCES shift_configurations(id) ON DELETE SET NULL,
-      ADD COLUMN overtime_hours DECIMAL(5,2) DEFAULT 0.0,
-      DROP COLUMN IF EXISTS shift_type;
-
-      ALTER TABLE payroll
-      ADD COLUMN advance_amount DECIMAL(15,2) DEFAULT 0;
+      ADD COLUMN shift_id UUID NOT NULL,
+      ADD CONSTRAINT fk_attendance_shift_id
+        FOREIGN KEY (shift_id) REFERENCES shift_configurations(id) ON DELETE SET NULL;
+      ;
+      
 
       CREATE INDEX idx_shift_name ON shift_configurations(name);
     `);

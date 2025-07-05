@@ -28,3 +28,11 @@ export class CreateLeaveBalanceDto {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export class RecordDto {
+  employeeId: string;
+  shiftId: string;
+  checkIn: Date;
+  checkOut: Date | null;
+  status: 'checked_in' | 'checked_out';
+}

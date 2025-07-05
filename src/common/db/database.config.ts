@@ -10,6 +10,7 @@ const databaseConfig: Options<PostgreSqlDriver> = {
   clientUrl: process.env.POSTGRES_URL,
   entities: ['./dist/common/db/entities/*.entity.js'],
   debug: process.env.NODE_ENV !== 'production',
+  // disableIdentityMap: true,
   // namingStrategy: UnderscoreNamingStrategy,
 
   discovery: {
