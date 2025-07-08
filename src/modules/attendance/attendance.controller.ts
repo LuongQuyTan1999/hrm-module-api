@@ -4,6 +4,7 @@ import { Role } from 'src/common/enum/role.enum';
 import { AttendanceService } from './attendance.service';
 import {
   CreateLeaveBalanceDto,
+  LeaveTypeEnum,
   RecordDto,
   RequestDto,
 } from './dto/attendance.dto';
@@ -29,7 +30,7 @@ export class AttendanceController {
   getAllRequests(@Query() query: AttendanceQueryDto) {
     return this.attendanceService.getAllRequests({
       ...query,
-      excludeLeaveTypes: ['remote'],
+      excludeLeaveTypes: [LeaveTypeEnum.REMOTE],
     });
   }
 
@@ -38,7 +39,7 @@ export class AttendanceController {
   getRemoteRequests(@Query() query: AttendanceQueryDto) {
     return this.attendanceService.getAllRequests({
       ...query,
-      leaveType: 'remote',
+      leaveType: LeaveTypeEnum.REMOTE,
     });
   }
 

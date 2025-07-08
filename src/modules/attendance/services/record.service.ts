@@ -1,6 +1,6 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Attendance } from 'src/common/db/entities/attendance.entity';
 import { AuditLogs } from 'src/common/db/entities/auditlog.entity';
 import { Users } from 'src/common/db/entities/user.entity';
@@ -21,43 +21,50 @@ export class RecordService {
     private readonly em: EntityManager,
   ) {}
 
-  async recordAttendance(body: RecordDto, currentUser: Users) {
-    await this.employeeValidationService.validateEmployeeExists(
-      body.employeeId,
-    );
+  async recordAttendance(
+    body: RecordDto,
+    currentUser: Users,
+  ): Promise<Attendance> {
+    try {
+      await this.employeeValidationService.validateEmployeeExists(
+        body.employeeId,
+      );
 
-    const attendance = this.attendanceRepository.create({
-      employee: this.em.getReference(Employees, body.employeeId),
-      shift: this.em.getReference(ShiftConfigurations, body.shiftId),
-      checkIn: body.checkIn,
-      checkOut: body.checkOut,
-      status: body.status,
-      location: 'Da nang',
-    });
-
-    await this.em.transactional(async (transactionalEM) => {
-      await transactionalEM.persistAndFlush(attendance);
-
-      const auditLog = this.auditLogsRepository.create({
-        user: this.em.getReference(Users, currentUser.id),
-        action: body.status === 'checked_in' ? 'Check In' : 'Check Out',
-        entityName: 'Attendance',
-        entityId: attendance.id, // ✅ Now has valid ID
-        details: {
-          employeeId: body.employeeId,
-          checkIn: body.checkIn,
-          checkOut: body.checkOut,
-          status: body.status,
-          shiftId: body.shiftId,
-        },
+      const attendance = this.attendanceRepository.create({
+        employee: this.em.getReference(Employees, body.employeeId),
+        shift: this.em.getReference(ShiftConfigurations, body.shiftId),
+        checkIn: body.checkIn,
+        checkOut: body.checkOut,
+        status: body.status,
+        location: 'Da nang',
       });
 
-      // ✅ Persist audit log
-      await transactionalEM.persistAndFlush(auditLog);
-    });
+      await this.em.transactional(async (transactionalEM) => {
+        await transactionalEM.persistAndFlush(attendance);
 
-    // await this.em.populate(attendance, ['employee', 'shift']);
+        const auditLog = this.auditLogsRepository.create({
+          user: this.em.getReference(Users, currentUser.id),
+          action: body.status === 'checked_in' ? 'Check In' : 'Check Out',
+          entityName: 'Attendance',
+          entityId: attendance.id, // ✅ Now has valid ID
+          details: {
+            employeeId: body.employeeId,
+            checkIn: body.checkIn,
+            checkOut: body.checkOut,
+            status: body.status,
+            shiftId: body.shiftId,
+          },
+        });
 
-    return attendance;
+        // ✅ Persist audit log
+        await transactionalEM.persistAndFlush(auditLog);
+      });
+
+      return attendance;
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to record attendance: ${error.message}`,
+      );
+    }
   }
 }
