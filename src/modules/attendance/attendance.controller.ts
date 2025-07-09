@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enum/role.enum';
 import { AttendanceService } from './attendance.service';
@@ -54,8 +63,17 @@ export class AttendanceController {
     return this.attendanceService.getLeaveBalance(employeeId);
   }
 
-  @Post('record-attendance')
-  recordAttendance(@Body() body: RecordDto, @Req() req: { user: Users }) {
-    return this.attendanceService.recordAttendance(body, req.user);
+  @Post('check-in')
+  checkIn(@Body() body: RecordDto, @Req() req: { user: Users }) {
+    return this.attendanceService.checkIn(body, req.user);
+  }
+
+  @Put('check-out/:id')
+  checkout(
+    @Param('id') id: string,
+    @Body() body: Partial<RecordDto>,
+    @Req() req: { user: Users },
+  ) {
+    return this.attendanceService.checkout(id, body, req.user);
   }
 }

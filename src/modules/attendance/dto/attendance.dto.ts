@@ -94,6 +94,6 @@ export class RecordDto {
   @IsDateString()
   checkOut: string | null;
 
-  @IsIn(['checked_in', 'checked_out'])
-  status: 'checked_in' | 'checked_out';
+  @IsIn(['checked_in', 'late', 'late_early', 'absent', 'normal'])
+  status: 'checked_in' | 'late' | 'late_early' | 'absent' | 'normal';
 }

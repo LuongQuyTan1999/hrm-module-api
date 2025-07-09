@@ -25,16 +25,17 @@ export class LeaveRequestService {
 
     this.validationService.validateDateRange(body.startDate, body.endDate);
 
-    // Triggers will handle balance changes
-    // - Balance validation
-    // - Overlap checking
-    // - Balance deduction (if approved)
     const leaveRequest = this.leaveRequestsRepository.create({
       ...body,
       employee: this.em.getReference(Employees, body.employeeId),
     });
 
+    // Before creating, will trigger DB to check balance and overlaps
+    // Check in validate_leave_request_balance_trigger_v2 and check_leave_overlap_trigger_v2 triggers
     await this.em.persistAndFlush(leaveRequest);
+    // After creating, the triggers will handle balance changes
+    // Check in attendance_after_update_v2 trigger
+
     return leaveRequest;
   }
 
@@ -42,9 +43,11 @@ export class LeaveRequestService {
     const leaveRequest =
       await this.validationService.validateLeaveRequestExists(id);
 
-    // Triggers will handle balance changes
     Object.assign(leaveRequest, body);
+
     await this.em.persistAndFlush(leaveRequest);
+    // After creating, the triggers will handle balance changes
+    // Check in attendance_after_update_v2 trigger
 
     return leaveRequest;
   }

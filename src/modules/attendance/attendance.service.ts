@@ -38,7 +38,15 @@ export class AttendanceService {
     return await this.leaveBalanceService.getByEmployeeId(employeeId);
   }
 
-  async recordAttendance(body: RecordDto, currentUser: Users) {
-    return await this.recordService.recordAttendance(body, currentUser);
+  async checkIn(body: RecordDto, currentUser: Users) {
+    return await this.recordService.checkIn(body, currentUser);
+  }
+
+  async checkout(
+    attendanceId: string,
+    body: Partial<RecordDto>,
+    currentUser: Users,
+  ) {
+    return await this.recordService.checkout(attendanceId, body, currentUser);
   }
 }
