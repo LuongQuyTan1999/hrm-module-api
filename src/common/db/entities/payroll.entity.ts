@@ -77,6 +77,18 @@ export class Payroll {
   paymentDate?: Date;
 
   @Property({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    defaultRaw: `0`,
+  })
+  overtimeSalary?: string;
+
+  @Property({ length: 20, nullable: true, defaultRaw: `'pending'` })
+  status?: string;
+
+  @Property({
     columnType: 'timestamp(6)',
     nullable: true,
     defaultRaw: `CURRENT_TIMESTAMP`,

@@ -212,6 +212,7 @@ export class PayrollService {
         bonuses: bonuses.toFixed(2),
         deductions: (totalInsuranceEmployee + pit + unionFee).toFixed(2),
         netSalary: netSalary.toFixed(2),
+        overtimeSalary: overtimeSalary.toFixed(2),
       });
 
       await this.em.transactional(async (transactionalEM) => {
@@ -329,10 +330,13 @@ export class PayrollService {
 
       const qb = this.payrollRepository
         .createQueryBuilder('p')
-        .leftJoinAndSelect('p.employee', 'e');
+        .leftJoinAndSelect('p.employee', 'e')
+        .leftJoinAndSelect('e.position', 'pos')
+        .leftJoinAndSelect('e.department', 'd')
+        .orderBy({ 'p.updatedAt': 'DESC' });
 
       if (employeeId) {
-        filters['p.employee.id'] = employeeId;
+        filters['p.employee'] = employeeId;
       }
 
       if (periodStart) {
