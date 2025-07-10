@@ -1,7 +1,6 @@
 import {
   Entity,
   ManyToOne,
-  OneToOne,
   type Opt,
   PrimaryKey,
   Property,
@@ -15,21 +14,13 @@ export class Attendance {
   @PrimaryKey({ type: 'uuid', defaultRaw: `uuid_generate_v4()` })
   id!: string & Opt;
 
-  @OneToOne({
+  @ManyToOne({
     entity: () => Employees,
     ref: true,
     deleteRule: 'cascade',
-    unique: 'idx_attendance_employee_id',
+    index: 'idx_attendance_employee_id',
   })
   employee!: Ref<Employees>;
-
-  @ManyToOne({
-    entity: () => ShiftConfigurations,
-    ref: true,
-    deleteRule: 'set null',
-    nullable: true,
-  })
-  shift?: Ref<ShiftConfigurations>;
 
   @Property({ columnType: 'timestamp(6)' })
   checkIn!: Date;
@@ -37,10 +28,17 @@ export class Attendance {
   @Property({ columnType: 'timestamp(6)', nullable: true })
   checkOut?: Date;
 
+  @Property({ length: 20 })
+  status!: string;
+
   @Property({
-    length: 20,
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+    defaultRaw: `0.0`,
   })
-  status?: string;
+  overtimeHours?: string;
 
   @Property()
   location!: string;
@@ -59,12 +57,10 @@ export class Attendance {
   })
   updatedAt?: Date;
 
-  @Property({
-    type: 'decimal',
-    precision: 5,
-    scale: 2,
-    nullable: true,
-    defaultRaw: `0.0`,
+  @ManyToOne({
+    entity: () => ShiftConfigurations,
+    ref: true,
+    deleteRule: 'set null',
   })
-  overtimeHours?: string;
+  shift!: Ref<ShiftConfigurations>;
 }

@@ -8,6 +8,7 @@ import { EmployeesModule } from './modules/employees/employees.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { PositionsModule } from './modules/positions/positions.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
+import { PayrollModule } from './modules/payroll/payroll.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
     DepartmentsModule,
     PositionsModule,
     AttendanceModule,
+    PayrollModule,
   ],
   providers: [
     { provide: 'APP_GUARD', useClass: JwtAuthGuard },

@@ -27,8 +27,8 @@ export class AuditLogs {
   @Property({ length: 50, nullable: true })
   entityName?: string;
 
-  @Property({ nullable: true })
-  entityId?: string;
+  @Property({ type: 'uuid' })
+  entityId!: string;
 
   @Property({ type: 'json', nullable: true })
   details?: any;

@@ -1,6 +1,6 @@
 import {
   Entity,
-  OneToOne,
+  ManyToOne,
   type Opt,
   PrimaryKey,
   Property,
@@ -13,11 +13,11 @@ export class Payroll {
   @PrimaryKey({ type: 'uuid', defaultRaw: `uuid_generate_v4()` })
   id!: string & Opt;
 
-  @OneToOne({
+  @ManyToOne({
     entity: () => Employees,
     ref: true,
     deleteRule: 'cascade',
-    unique: 'idx_payroll_employee_id',
+    index: 'idx_payroll_employee_id',
   })
   employee!: Ref<Employees>;
 
@@ -61,6 +61,15 @@ export class Payroll {
   netSalary!: string;
 
   @Property({
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    nullable: true,
+    defaultRaw: `0`,
+  })
+  advanceAmount?: string;
+
+  @Property({
     columnType: 'timestamp(6)',
     nullable: true,
     defaultRaw: `CURRENT_TIMESTAMP`,
@@ -80,13 +89,4 @@ export class Payroll {
     defaultRaw: `CURRENT_TIMESTAMP`,
   })
   updatedAt?: Date;
-
-  @Property({
-    type: 'decimal',
-    precision: 15,
-    scale: 2,
-    nullable: true,
-    defaultRaw: `0`,
-  })
-  advanceAmount?: string;
 }

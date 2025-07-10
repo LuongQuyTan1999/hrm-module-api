@@ -18,19 +18,17 @@ export class SalaryRules {
     entity: () => Positions,
     ref: true,
     deleteRule: 'cascade',
-    nullable: true,
     index: 'idx_salary_rules_position_id',
   })
-  position?: Ref<Positions>;
+  position!: Ref<Positions>;
 
   @ManyToOne({
     entity: () => Departments,
     ref: true,
     deleteRule: 'cascade',
-    nullable: true,
     index: 'idx_salary_rules_department_id',
   })
-  department?: Ref<Departments>;
+  department!: Ref<Departments>;
 
   @Property({ type: 'decimal', precision: 15, scale: 2 })
   basicSalary!: string;
