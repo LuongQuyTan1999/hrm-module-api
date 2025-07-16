@@ -1,17 +1,14 @@
 import { MikroORM } from '@mikro-orm/core';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
-import { AllExceptionsFilter } from './common/filter/all-exception.filter';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   dotenv.config();
 
   const app = await NestFactory.create(AppModule);
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   // In prod we only allow the front-end origins specified in CORS_ORIGINS

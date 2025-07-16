@@ -817,6 +817,29 @@
           "default": "CURRENT_TIMESTAMP",
           "mappedType": "datetime"
         },
+        "overtime_salary": {
+          "name": "overtime_salary",
+          "type": "numeric(10,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "default": "0",
+          "mappedType": "decimal"
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 20,
+          "default": "'pending'",
+          "mappedType": "string"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp(6)",

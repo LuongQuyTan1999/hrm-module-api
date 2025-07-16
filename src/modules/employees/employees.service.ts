@@ -169,6 +169,23 @@ export class EmployeesService {
     return user;
   }
 
+  async findEmployeeByUserId(userId: string): Promise<Employees> {
+    try {
+      const user = await this.userRepository.findOne(userId, {
+        populate: ['employee'],
+      });
+
+      if (!user) {
+        throw new NotFoundException(`Can't find user by ${userId}`);
+      }
+      const employee = user.employee as unknown as Employees;
+
+      return employee;
+    } catch (error) {
+      throw new BadRequestException(`Error: ${error}`);
+    }
+  }
+
   private async generateEmployeeCode(): Promise<string> {
     const lastEmployee = await this.employeeRepository.findOne(
       { employeeCode: { $ne: null } },

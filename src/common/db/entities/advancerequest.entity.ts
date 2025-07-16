@@ -24,12 +24,8 @@ export class AdvanceRequests {
   @Property({ type: 'decimal', precision: 15, scale: 2 })
   requestAmount!: string;
 
-  @Property({
-    type: 'datetime',
-    columnType: 'timestamp(6)',
-    defaultRaw: `CURRENT_TIMESTAMP`,
-  })
-  requestDate!: Date & Opt;
+  @Property({ type: 'date', defaultRaw: `CURRENT_TIMESTAMP` })
+  requestDate!: string & Opt;
 
   @Property({ length: 20 })
   status!: string;
@@ -50,4 +46,18 @@ export class AdvanceRequests {
     defaultRaw: `CURRENT_TIMESTAMP`,
   })
   updatedAt?: Date;
+
+  @Property({ type: 'boolean', nullable: true })
+  isUrgent?: boolean = false;
+
+  @ManyToOne({
+    entity: () => Employees,
+    ref: true,
+    deleteRule: 'cascade',
+    nullable: true,
+  })
+  approver?: Ref<Employees>;
+
+  @Property({ type: 'date', nullable: true })
+  dueDate?: string;
 }

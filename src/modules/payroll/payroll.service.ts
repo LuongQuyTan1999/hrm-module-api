@@ -15,6 +15,7 @@ import { EmployeeValidationService } from '../employees/services/employee-valida
 import { PayrollDetails } from 'src/common/db/entities/payrolldetail.entity';
 import { InsuranceContributions } from 'src/common/db/entities/insurancecontribution.entity';
 import { TaxRecords } from 'src/common/db/entities/taxrecord.entity';
+import { AdvanceRequestsService } from './services/advance-requests.service';
 
 @Injectable()
 export class PayrollService {
@@ -36,6 +37,7 @@ export class PayrollService {
     @InjectRepository(TaxRecords)
     private readonly taxRecordsRepository: EntityRepository<TaxRecords>,
     private readonly employeeValidationService: EmployeeValidationService,
+    private readonly advanceRequestsService: AdvanceRequestsService,
     private readonly em: EntityManager,
   ) {}
 
@@ -192,6 +194,12 @@ export class PayrollService {
       const pit = this.calculatePIT(taxableIncome, dependents);
       const dailyRate = Number(basicSalary / 22).toFixed(2); // Assuming 22 working days in a month
 
+      // Calculate Advance Request
+      const totalAdvanceAmount =
+        await this.advanceRequestsService.getTotalAdvanceAmountByEmployeeId(
+          employeeId,
+        );
+
       // Calculate net salary
       const netSalary =
         basicSalary +
@@ -200,7 +208,8 @@ export class PayrollService {
         overtimeSalary -
         totalInsuranceEmployee -
         pit -
-        unionFee;
+        unionFee -
+        totalAdvanceAmount;
 
       // Create or update payroll record
       const payroll = this.payrollRepository.create({
