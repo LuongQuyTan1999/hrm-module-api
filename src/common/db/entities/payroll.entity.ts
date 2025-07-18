@@ -7,8 +7,9 @@ import {
   type Ref,
 } from '@mikro-orm/core';
 import { Employees } from './employee.entity';
+import { PayrollRepository } from 'src/modules/payroll/payroll.repository';
 
-@Entity()
+@Entity({ repository: () => PayrollRepository })
 export class Payroll {
   @PrimaryKey({ type: 'uuid', defaultRaw: `uuid_generate_v4()` })
   id!: string & Opt;

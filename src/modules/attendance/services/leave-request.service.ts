@@ -3,7 +3,7 @@ import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { Employees } from 'src/common/db/entities/employee.entity';
 import { LeaveRequests } from 'src/common/db/entities/leaverequest.entity';
-import { EmployeeValidationService } from 'src/modules/employees/services/employee-validation.service';
+import { EmployeesService } from 'src/modules/employees/employees.service';
 import { RequestDto } from '../dto/attendance.dto';
 import { AttendanceQueryDto } from '../dto/query.dto';
 import { AttendanceValidationService } from './attendance-validation.service';
@@ -15,13 +15,11 @@ export class LeaveRequestService {
     private readonly leaveRequestsRepository: EntityRepository<LeaveRequests>,
     private readonly em: EntityManager,
     private readonly validationService: AttendanceValidationService,
-    private readonly employeeValidationService: EmployeeValidationService,
+    private readonly employeesSer: EmployeesService,
   ) {}
 
   async create(body: RequestDto): Promise<LeaveRequests> {
-    await this.employeeValidationService.validateEmployeeExists(
-      body.employeeId,
-    );
+    await this.employeesSer.findOne(body.employeeId);
 
     this.validationService.validateDateRange(body.startDate, body.endDate);
 
@@ -114,7 +112,7 @@ export class LeaveRequestService {
   }
 
   async findByEmployee(employeeId: string): Promise<LeaveRequests[]> {
-    await this.employeeValidationService.validateEmployeeExists(employeeId);
+    await this.employeesSer.findOne(employeeId);
 
     return await this.leaveRequestsRepository.find(
       { employee: employeeId },

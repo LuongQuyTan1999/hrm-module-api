@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 import { Employees } from 'src/common/db/entities/employee.entity';
 import { LeaveBalances } from 'src/common/db/entities/leavebalance.entity';
+import { EmployeesService } from 'src/modules/employees/employees.service';
 import { CreateLeaveBalanceDto } from '../dto/attendance.dto';
 import { AttendanceValidationService } from './attendance-validation.service';
-import { EmployeeValidationService } from 'src/modules/employees/services/employee-validation.service';
 
 @Injectable()
 export class LeaveBalanceService {
@@ -14,13 +14,11 @@ export class LeaveBalanceService {
     private readonly leaveBalancesRepository: EntityRepository<LeaveBalances>,
     private readonly em: EntityManager,
     private readonly validationService: AttendanceValidationService,
-    private readonly employeeValidationService: EmployeeValidationService,
+    private readonly employeesSer: EmployeesService,
   ) {}
 
   async create(body: CreateLeaveBalanceDto): Promise<LeaveBalances> {
-    await this.employeeValidationService.validateEmployeeExists(
-      body.employeeId,
-    );
+    await this.employeesSer.findOne(body.employeeId);
 
     await this.validationService.validateUniqueLeaveBalance(
       body.employeeId,
@@ -37,7 +35,7 @@ export class LeaveBalanceService {
   }
 
   async getByEmployeeId(employeeId: string): Promise<LeaveBalances[]> {
-    await this.employeeValidationService.validateEmployeeExists(employeeId);
+    await this.employeesSer.findOne(employeeId);
 
     const leaveBalances = await this.leaveBalancesRepository.find({
       employee: employeeId,

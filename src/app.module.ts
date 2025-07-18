@@ -3,12 +3,17 @@ import { Module } from '@nestjs/common';
 import databaseConfig from './common/db/database.config';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
-import { AuthModule } from './modules/auth/auth.module';
-import { EmployeesModule } from './modules/employees/employees.module';
-import { DepartmentsModule } from './modules/departments/departments.module';
-import { PositionsModule } from './modules/positions/positions.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { DepartmentsModule } from './modules/departments/departments.module';
+import { EmployeesModule } from './modules/employees/employees.module';
+import { InsuranceModule } from './modules/insurance/insurance.module';
+import { PayrollDetailsModule } from './modules/payroll-details/payroll-details.module';
 import { PayrollModule } from './modules/payroll/payroll.module';
+import { PositionsModule } from './modules/positions/positions.module';
+import { SalariesModule } from './modules/salaries/salaries.module';
+import { TaxRecordsModule } from './modules/tax-records/tax-records.module';
+import { AdvanceRequestsModule } from './modules/advance-requests/advance-requests.module';
 
 @Module({
   imports: [
@@ -19,6 +24,11 @@ import { PayrollModule } from './modules/payroll/payroll.module';
     PositionsModule,
     AttendanceModule,
     PayrollModule,
+    PayrollDetailsModule,
+    InsuranceModule,
+    TaxRecordsModule,
+    SalariesModule,
+    AdvanceRequestsModule,
   ],
   providers: [
     { provide: 'APP_GUARD', useClass: JwtAuthGuard },

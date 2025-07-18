@@ -6,10 +6,11 @@ import {
   Property,
   type Ref,
 } from '@mikro-orm/core';
+import { PayrollDetailsRepository } from 'src/modules/payroll-details/payroll-details.repository';
 import { Employees } from './employee.entity';
 import { Payroll } from './payroll.entity';
 
-@Entity()
+@Entity({ repository: () => PayrollDetailsRepository })
 export class PayrollDetails {
   @PrimaryKey({ type: 'uuid', defaultRaw: `uuid_generate_v4()` })
   id!: string & Opt;
@@ -58,6 +59,15 @@ export class PayrollDetails {
 
   @Property({ type: 'decimal', precision: 15, scale: 2, nullable: true })
   dailyRate?: string;
+
+  @Property({
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    nullable: true,
+    defaultRaw: `0`,
+  })
+  advanceAmount?: string;
 
   @Property({
     columnType: 'timestamp(6)',

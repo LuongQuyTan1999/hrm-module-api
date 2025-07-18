@@ -10,14 +10,13 @@ import {
   Req,
 } from '@nestjs/common';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { User } from 'src/common/decorators/user.decorator';
 import { Role } from 'src/common/enum/role.enum';
 import { Users } from '../../common/db/entities/user.entity';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FindEmployeesDto } from './dto/query.dto';
-import { EmployeesService } from './employees.service';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { EmployeesService } from './employees.service';
 
 export class ChatDto {
   message: string;
@@ -40,8 +39,8 @@ export class EmployeesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @User() user: Users) {
-    return this.employeesService.findOne(id, user);
+  async findOne(@Param('id') id: string) {
+    return this.employeesService.findOne(id);
   }
 
   @Put(':id')

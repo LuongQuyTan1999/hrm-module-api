@@ -6,7 +6,7 @@ import {
 } from 'class-validator';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
-export class CalculatorPayrollDto {
+export class CreatePayrollDto {
   @IsString()
   @IsNotEmpty()
   employeeId: string;

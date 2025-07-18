@@ -7,11 +7,11 @@ import {
 } from '@nestjs/common';
 import { Attendance } from 'src/common/db/entities/attendance.entity';
 import { AuditLogs } from 'src/common/db/entities/auditlog.entity';
-import { Users } from 'src/common/db/entities/user.entity';
-import { EmployeeValidationService } from 'src/modules/employees/services/employee-validation.service';
-import { RecordDto } from '../dto/attendance.dto';
 import { Employees } from 'src/common/db/entities/employee.entity';
 import { ShiftConfigurations } from 'src/common/db/entities/shiftconfiguration.entity';
+import { Users } from 'src/common/db/entities/user.entity';
+import { EmployeesService } from 'src/modules/employees/employees.service';
+import { RecordDto } from '../dto/attendance.dto';
 
 @Injectable()
 export class RecordService {
@@ -20,16 +20,13 @@ export class RecordService {
     private readonly attendanceRepository: EntityRepository<Attendance>,
     @InjectRepository(AuditLogs)
     private readonly auditLogsRepository: EntityRepository<AuditLogs>,
-    private readonly employeeValidationService: EmployeeValidationService,
-
+    private readonly employeesSer: EmployeesService,
     private readonly em: EntityManager,
   ) {}
 
   async checkIn(body: RecordDto, currentUser: Users): Promise<Attendance> {
     try {
-      await this.employeeValidationService.validateEmployeeExists(
-        body.employeeId,
-      );
+      await this.employeesSer.findOne(body.employeeId);
 
       const attendance = this.attendanceRepository.create({
         employee: this.em.getReference(Employees, body.employeeId),

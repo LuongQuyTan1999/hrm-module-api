@@ -8,8 +8,9 @@ import {
 } from '@mikro-orm/core';
 import { Employees } from './employee.entity';
 import { Payroll } from './payroll.entity';
+import { InsuranceRepository } from 'src/modules/insurance/insurance.repository';
 
-@Entity()
+@Entity({ repository: () => InsuranceRepository })
 export class InsuranceContributions {
   @PrimaryKey({ type: 'uuid', defaultRaw: `uuid_generate_v4()` })
   id!: string & Opt;

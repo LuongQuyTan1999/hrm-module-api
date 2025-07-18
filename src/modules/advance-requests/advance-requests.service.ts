@@ -6,23 +6,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AdvanceRequests } from 'src/common/db/entities/advancerequest.entity';
+import { Employees } from 'src/common/db/entities/employee.entity';
+import { Users } from 'src/common/db/entities/user.entity';
+import { EmployeesService } from 'src/modules/employees/employees.service';
 import {
   AdvanceRequestsQueryDto,
   CreateAdvanceRequestsDto,
   UpdateAdvanceRequestsDto,
-} from '../dto/advance-requests.dto';
-import { Employees } from 'src/common/db/entities/employee.entity';
-import { EmployeeValidationService } from 'src/modules/employees/services/employee-validation.service';
-import { Users } from 'src/common/db/entities/user.entity';
-import { EmployeesService } from 'src/modules/employees/employees.service';
+} from './dto/advance-request.dto';
 
 @Injectable()
 export class AdvanceRequestsService {
   constructor(
     @InjectRepository(AdvanceRequests)
     private readonly advanceRequestsRepository: EntityRepository<AdvanceRequests>,
-    private readonly employeeValidationService: EmployeeValidationService,
-    private readonly employeeService: EmployeesService,
+    private readonly employeesSer: EmployeesService,
     private readonly em: EntityManager,
   ) {}
 
@@ -68,9 +66,7 @@ export class AdvanceRequestsService {
 
   async create(body: CreateAdvanceRequestsDto): Promise<AdvanceRequests> {
     try {
-      await this.employeeValidationService.validateEmployeeExists(
-        body.employeeId,
-      );
+      await this.employeesSer.findOne(body.employeeId);
 
       const advance = this.advanceRequestsRepository.create({
         employee: this.em.getReference(Employees, body.employeeId),
@@ -99,7 +95,7 @@ export class AdvanceRequestsService {
         throw new NotFoundException('Advance Requests do not exist');
       }
 
-      const employee = await this.employeeService.findEmployeeByUserId(
+      const employee = await this.employeesSer.findEmployeeByUserId(
         currentUser.id,
       );
 

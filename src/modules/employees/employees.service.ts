@@ -78,24 +78,15 @@ export class EmployeesService {
   /**
    * Get an employee profile by ID
    * @param id - ID of the employee profile
-   * @param currentUser - Current user making the request
    * @returns Employee profile found
    */
-  async findOne(id: string, currentUser: Users): Promise<Employees> {
+  async findOne(id: string): Promise<Employees> {
     const employee = await this.employeeRepository.findOne(id, {
       populate: ['department', 'position', 'user'],
     });
 
     if (!employee) {
-      throw new NotFoundException('Hồ sơ nhân viên không tồn tại');
-    }
-
-    if (
-      currentUser.role !== Role.ADMIN &&
-      currentUser.role !== Role.MANAGER
-      // employee.user.id !== currentUser.id
-    ) {
-      throw new ForbiddenException('Bạn không có quyền truy cập hồ sơ này');
+      throw new NotFoundException(`Employee with ID ${id} not found`);
     }
 
     return employee;

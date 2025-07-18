@@ -1049,6 +1049,18 @@
           "scale": 2,
           "mappedType": "decimal"
         },
+        "advance_amount": {
+          "name": "advance_amount",
+          "type": "numeric(15,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 15,
+          "scale": 2,
+          "default": "0",
+          "mappedType": "decimal"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp(6)",
@@ -1601,6 +1613,113 @@
           "nullable": false,
           "mappedType": "uuid"
         },
+        "salary_amount": {
+          "name": "salary_amount",
+          "type": "numeric(15,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "precision": 15,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "effective_date": {
+          "name": "effective_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "date"
+        },
+        "end_date": {
+          "name": "end_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "mappedType": "date"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        }
+      },
+      "name": "employee_salaries",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "employee_salaries_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "employee_salaries_employee_id_foreign": {
+          "constraintName": "employee_salaries_employee_id_foreign",
+          "columnNames": [
+            "employee_id"
+          ],
+          "localTableName": "public.employee_salaries",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.employees",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "uuid_generate_v4()",
+          "mappedType": "uuid"
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
         "request_amount": {
           "name": "request_amount",
           "type": "numeric(15,2)",
@@ -1614,14 +1733,14 @@
         },
         "request_date": {
           "name": "request_date",
-          "type": "timestamp(6)",
+          "type": "date",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 6,
+          "length": 0,
           "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
+          "mappedType": "date"
         },
         "status": {
           "name": "status",
@@ -1663,6 +1782,35 @@
           "length": 6,
           "default": "CURRENT_TIMESTAMP",
           "mappedType": "datetime"
+        },
+        "is_urgent": {
+          "name": "is_urgent",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "approver_id": {
+          "name": "approver_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "due_date": {
+          "name": "due_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "mappedType": "date"
         }
       },
       "name": "advance_requests",
@@ -1695,6 +1843,19 @@
           "constraintName": "advance_requests_employee_id_foreign",
           "columnNames": [
             "employee_id"
+          ],
+          "localTableName": "public.advance_requests",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.employees",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "advance_requests_approver_id_foreign": {
+          "constraintName": "advance_requests_approver_id_foreign",
+          "columnNames": [
+            "approver_id"
           ],
           "localTableName": "public.advance_requests",
           "referencedColumnNames": [
