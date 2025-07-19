@@ -33,20 +33,6 @@ export class AdvanceRequests {
   @Property({ type: 'text', nullable: true })
   reason?: string;
 
-  @Property({
-    columnType: 'timestamp(6)',
-    nullable: true,
-    defaultRaw: `CURRENT_TIMESTAMP`,
-  })
-  createdAt?: Date;
-
-  @Property({
-    columnType: 'timestamp(6)',
-    nullable: true,
-    defaultRaw: `CURRENT_TIMESTAMP`,
-  })
-  updatedAt?: Date;
-
   @Property({ type: 'boolean', nullable: true })
   isUrgent?: boolean = false;
 
@@ -60,4 +46,18 @@ export class AdvanceRequests {
 
   @Property({ type: 'date', nullable: true })
   dueDate?: string;
+
+  @Property({
+    columnType: 'timestamp(6)',
+    nullable: true,
+    defaultRaw: `CURRENT_TIMESTAMP`,
+  })
+  createdAt?: Date;
+
+  @Property({
+    columnType: 'timestamp(6)',
+    nullable: true,
+    defaultRaw: `CURRENT_TIMESTAMP`,
+  })
+  updatedAt?: Date;
 }

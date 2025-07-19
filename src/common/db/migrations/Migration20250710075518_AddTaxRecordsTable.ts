@@ -22,6 +22,8 @@ export class Migration20250710075518_AddTaxRecordsTable extends Migration {
   }
 
   override async down(): Promise<void> {
-    this.addSql(`select 1`);
+    this.addSql(/*sql*/ `
+      DROP TABLE IF EXISTS tax_records CASCADE;
+    `);
   }
 }

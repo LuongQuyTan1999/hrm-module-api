@@ -27,47 +27,17 @@ export class PayrollDetails {
   @Property({ type: 'date' })
   periodEndDate!: string;
 
-  @Property({ type: 'decimal', precision: 15, scale: 2 })
-  basicSalary!: string;
+  @Property({ length: 50 })
+  componentType!: string;
 
-  @Property({ type: 'json', nullable: true })
-  allowances?: any;
-
-  @Property({ type: 'json', nullable: true })
-  bonuses?: any;
-
-  @Property({ type: 'json', nullable: true })
-  deductions?: any;
-
-  @Property({
-    type: 'decimal',
-    precision: 5,
-    scale: 2,
-    nullable: true,
-    defaultRaw: `0.0`,
-  })
-  overtimeHours?: string;
-
-  @Property({ type: 'decimal', precision: 15, scale: 2, nullable: true })
-  overtimeSalary?: string;
+  @Property({ length: 100 })
+  componentName!: string;
 
   @Property({ type: 'decimal', precision: 15, scale: 2 })
-  netSalary!: string;
+  amount!: string;
 
-  @Property({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-  workingHours?: string;
-
-  @Property({ type: 'decimal', precision: 15, scale: 2, nullable: true })
-  dailyRate?: string;
-
-  @Property({
-    type: 'decimal',
-    precision: 15,
-    scale: 2,
-    nullable: true,
-    defaultRaw: `0`,
-  })
-  advanceAmount?: string;
+  @Property({ type: 'text', nullable: true })
+  description?: string;
 
   @Property({
     columnType: 'timestamp(6)',

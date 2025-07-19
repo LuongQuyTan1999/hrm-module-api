@@ -58,6 +58,15 @@ export class Payroll {
   })
   deductions?: string;
 
+  @Property({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    defaultRaw: `0`,
+  })
+  overtimeSalary?: string;
+
   @Property({ type: 'decimal', precision: 10, scale: 2 })
   netSalary!: string;
 
@@ -70,24 +79,15 @@ export class Payroll {
   })
   advanceAmount?: string;
 
+  @Property({ type: 'string', length: 20 })
+  status: string & Opt = 'pending';
+
   @Property({
     columnType: 'timestamp(6)',
     nullable: true,
     defaultRaw: `CURRENT_TIMESTAMP`,
   })
   paymentDate?: Date;
-
-  @Property({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: true,
-    defaultRaw: `0`,
-  })
-  overtimeSalary?: string;
-
-  @Property({ length: 20, nullable: true, defaultRaw: `'pending'` })
-  status?: string;
 
   @Property({
     columnType: 'timestamp(6)',

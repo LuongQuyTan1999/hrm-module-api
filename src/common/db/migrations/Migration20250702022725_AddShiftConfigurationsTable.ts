@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20250704042656_AddShiftConfigurationsTable extends Migration {
+export class Migration20250702022725_AddShiftConfigurationsTable extends Migration {
   override async up(): Promise<void> {
     this.addSql(/*sql*/ `
       CREATE TABLE shift_configurations (
@@ -13,13 +13,6 @@ export class Migration20250704042656_AddShiftConfigurationsTable extends Migrati
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
-
-      ALTER TABLE attendance
-      ADD COLUMN shift_id UUID NOT NULL,
-      ADD CONSTRAINT fk_attendance_shift_id
-        FOREIGN KEY (shift_id) REFERENCES shift_configurations(id) ON DELETE SET NULL;
-      ;
-      
 
       CREATE INDEX idx_shift_name ON shift_configurations(name);
     `);

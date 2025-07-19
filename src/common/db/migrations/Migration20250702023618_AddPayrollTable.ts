@@ -12,8 +12,10 @@ export class Migration20250702023618_AddPayrollTable extends Migration {
         allowances NUMERIC(10, 2) DEFAULT 0,
         bonuses NUMERIC(10, 2) DEFAULT 0,
         deductions NUMERIC(10, 2) DEFAULT 0,
+        overtime_salary DECIMAL(10, 2) DEFAULT 0,
         net_salary NUMERIC(10, 2) NOT NULL,
         advance_amount NUMERIC(15, 2) DEFAULT 0,
+        status VARCHAR(20) DEFAULT 'pending' NOT NULL,
         payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -27,7 +29,8 @@ export class Migration20250702023618_AddPayrollTable extends Migration {
   }
 
   override async down(): Promise<void> {
-    this.addSql(`select 1`);
+    this.addSql(/*sql*/ `
+      DROP TABLE IF EXISTS payroll CASCADE;
+    `);
   }
 }
-// CREATE INDEX idx_payroll_pay_period ON payroll(pay_period_start, pay_period_end);

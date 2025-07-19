@@ -9,7 +9,6 @@ export class PayrollRepository extends EntityRepository<Payroll> {
     periodStart: string,
     periodEnd: string,
   ): Promise<Payroll> {
-    console.log({ data });
     const payroll = this.create({
       employee: this.em.getReference(Employees, employeeId),
       payPeriodStart: periodStart,

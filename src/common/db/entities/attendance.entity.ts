@@ -28,17 +28,15 @@ export class Attendance {
   @Property({ columnType: 'timestamp(6)', nullable: true })
   checkOut?: Date;
 
+  @ManyToOne({
+    entity: () => ShiftConfigurations,
+    ref: true,
+    deleteRule: 'cascade',
+  })
+  shift!: Ref<ShiftConfigurations>;
+
   @Property({ length: 20 })
   status!: string;
-
-  @Property({
-    type: 'decimal',
-    precision: 5,
-    scale: 2,
-    nullable: true,
-    defaultRaw: `0.0`,
-  })
-  overtimeHours?: string;
 
   @Property()
   location!: string;
@@ -56,11 +54,4 @@ export class Attendance {
     defaultRaw: `CURRENT_TIMESTAMP`,
   })
   updatedAt?: Date;
-
-  @ManyToOne({
-    entity: () => ShiftConfigurations,
-    ref: true,
-    deleteRule: 'set null',
-  })
-  shift!: Ref<ShiftConfigurations>;
 }

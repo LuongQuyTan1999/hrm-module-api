@@ -9,15 +9,10 @@ export class Migration20250710074116_AddPayrollDetailsTable extends Migration {
         employee_id UUID NOT NULL,
         period_start_date DATE NOT NULL,
         period_end_date DATE NOT NULL,
-        basic_salary NUMERIC(15, 2) NOT NULL,
-        allowances JSONB,
-        bonuses JSONB,
-        deductions JSONB,
-        overtime_hours DECIMAL(5, 2) DEFAULT 0.0,
-        overtime_salary NUMERIC(15, 2),
-        net_salary NUMERIC(15, 2) NOT NULL,
-        working_hours DECIMAL(5, 2),
-        daily_rate DECIMAL(15, 2),
+        component_type VARCHAR(50) NOT NULL, -- allowance, bonus, deduction
+        component_name VARCHAR(100) NOT NULL, -- e.g., lunch, performance, union_fee
+        amount DECIMAL(15,2) NOT NULL,
+        description TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
