@@ -22,39 +22,21 @@ export class PayrollCalculatorService {
   async calculate(data: {
     salaryRule: SalaryRules;
     benefits: any;
-    overtimeRate: number; // e.g., 150000
-    overtimeMultiplier: number; // e.g., 1.5
     totalAdvanceAmount: number;
-    attendanceRecords: any;
     periodEnd: string;
+    overtimeSalary: number;
   }) {
     const {
       salaryRule,
       benefits,
-      attendanceRecords,
       periodEnd,
       totalAdvanceAmount,
+      overtimeSalary,
     } = data;
 
     const allowances = this.calculateTotalFromRule(salaryRule.allowanceRule);
     const bonuses = this.calculateTotalFromRule(salaryRule.bonusRule);
     const deductions = this.calculateTotalFromRule(salaryRule.deductionRule);
-
-    const overtimeHours = attendanceRecords.reduce(
-      (sum, record) => sum + (Number(record.overtimeHours) || 0),
-      0,
-    );
-    const workingHours = attendanceRecords.reduce((sum, record) => {
-      if (record.checkOut && record.checkIn) {
-        return (
-          sum + (record.checkOut.getTime() - record.checkIn.getTime()) / 3600000
-        );
-      }
-      return sum;
-    }, 0);
-
-    const overtimeSalary =
-      overtimeHours * data.overtimeRate * data.overtimeMultiplier;
 
     const insurance = await this.insuranceService.calculateInsurance(
       Number(salaryRule.basicSalary),
@@ -84,8 +66,6 @@ export class PayrollCalculatorService {
       basicSalary: Number(salaryRule.basicSalary),
       allowances,
       bonuses,
-      overtimeHours,
-      workingHours,
       overtimeSalary,
       insurance,
       pit,

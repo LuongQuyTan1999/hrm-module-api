@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsDateString,
   IsNotEmpty,
   IsOptional,
@@ -10,6 +11,20 @@ export class CreatePayrollDto {
   @IsString()
   @IsNotEmpty()
   employeeId: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  periodStart: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  periodEnd: string;
+}
+
+export class CreatePayrollBatchDto {
+  @IsArray()
+  @IsNotEmpty()
+  departmentIds: string[];
 
   @IsDateString()
   @IsNotEmpty()

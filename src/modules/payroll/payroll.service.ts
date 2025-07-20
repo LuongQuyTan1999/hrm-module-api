@@ -1,27 +1,28 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { EntityRepository, FilterQuery } from '@mikro-orm/postgresql';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Attendance } from 'src/common/db/entities/attendance.entity';
 import { EmployeeBenefits } from 'src/common/db/entities/employeebenefit.entity';
 import { Payroll } from 'src/common/db/entities/payroll.entity';
-import { ShiftConfigurations } from 'src/common/db/entities/shiftconfiguration.entity';
 import { AdvanceRequestsService } from '../advance-requests/advance-requests.service';
 import { EmployeesService } from '../employees/employees.service';
 import { InsuranceRepository } from '../insurance/insurance.repository';
+import { OvertimeService } from '../overtime/overtime.service';
 import { PayrollDetailsRepository } from '../payroll-details/payroll-details.repository';
 import { SalariesService } from '../salaries/salaries.service';
 import { TaxRecordsRepository } from '../tax-records/tax-records.repository';
-import { CreatePayrollDto, PayrollQueryDto } from './dto/payroll.dto';
+import {
+  CreatePayrollBatchDto,
+  CreatePayrollDto,
+  PayrollQueryDto,
+} from './dto/payroll.dto';
 import { PayrollRepository } from './payroll.repository';
 import { PayrollCalculatorService } from './services/payroll-calculator.service';
+import { EmployeeRepository } from '../employees/employees.repository';
+import { Employees } from 'src/common/db/entities/employee.entity';
 
 @Injectable()
 export class PayrollService {
   constructor(
-    @InjectRepository(Attendance)
-    private readonly attendanceRep: EntityRepository<Attendance>,
-    @InjectRepository(ShiftConfigurations)
-    private readonly shiftConfigurationRep: EntityRepository<ShiftConfigurations>,
     @InjectRepository(EmployeeBenefits)
     private readonly employeeBenefitsRep: EntityRepository<EmployeeBenefits>,
 
@@ -33,6 +34,8 @@ export class PayrollService {
     private readonly insurance: InsuranceRepository,
     private readonly tax: TaxRecordsRepository,
     private readonly employeesSer: EmployeesService,
+    private readonly overtimeSer: OvertimeService,
+    private readonly employeeRep: EmployeeRepository,
   ) {}
 
   async createPayroll(body: CreatePayrollDto) {
@@ -40,46 +43,36 @@ export class PayrollService {
       const { employeeId, periodStart, periodEnd } = body;
       const employee = await this.employeesSer.findOne(employeeId);
 
-      const [salaryRule, attendanceRecords, benefits] = await Promise.all([
-        this.salaries.getSalaryRule({
-          employee,
-          periodEnd,
-        }),
-        this.attendanceRep.findAll({
-          where: {
-            employee, // You can use the shorthand here
-            checkIn: { $gte: periodStart, $lte: periodEnd },
-            checkOut: { $ne: null },
-          },
-          orderBy: { checkIn: 'ASC' },
-        }),
-        this.employeeBenefitsRep.findOne({
-          employee,
-          benefitType: 'dependents',
-          effectiveDate: { $lte: periodEnd },
-          $or: [{ expiryDate: { $gte: periodEnd } }, { expiryDate: null }],
-        }),
-      ]);
-
-      const shift = await this.shiftConfigurationRep.findOne({
-        id: attendanceRecords[0]?.shift?.id,
-      });
-
-      const totalAdvanceAmount =
-        await this.advanceRequestsSer.getTotalAdvanceAmountByEmployeeId(
-          employeeId,
-          periodStart,
-          periodEnd,
-        );
+      const [salaryRule, benefits, overtimeSalary, totalAdvanceAmount] =
+        await Promise.all([
+          this.salaries.getSalaryRule({
+            employee,
+            periodEnd,
+          }),
+          this.employeeBenefitsRep.findOne({
+            employee,
+            benefitType: 'dependents',
+            effectiveDate: { $lte: periodEnd },
+            $or: [{ expiryDate: { $gte: periodEnd } }, { expiryDate: null }],
+          }),
+          this.overtimeSer.calculateOvertimeSalary(
+            employeeId,
+            periodStart,
+            periodEnd,
+          ),
+          await this.advanceRequestsSer.getTotalAdvanceAmountByEmployeeId(
+            employeeId,
+            periodStart,
+            periodEnd,
+          ),
+        ]);
 
       const calculationResult = await this.calculatorSer.calculate({
         salaryRule,
         benefits,
-        overtimeRate: 150000, // Should be from config
-        overtimeMultiplier: Number(shift?.overtimeMultiplier) || 1.5,
         totalAdvanceAmount,
-        attendanceRecords,
         periodEnd,
+        overtimeSalary,
       });
 
       const data = {
@@ -126,6 +119,46 @@ export class PayrollService {
     }
   }
 
+  async createPayrollBatch(body: CreatePayrollBatchDto): Promise<{
+    payrolls: Payroll[];
+  }> {
+    try {
+      const { departmentIds, periodStart, periodEnd } = body;
+      const payrolls: Payroll[] = [];
+
+      const where: FilterQuery<Employees> = {
+        hireDate: { $lte: periodEnd },
+      };
+
+      if (departmentIds && departmentIds.length > 0) {
+        where.department = { $in: departmentIds };
+      }
+
+      const employees = await this.employeeRep.find(where);
+
+      if (employees.length === 0) {
+        throw new Error('No employees found for the specified criteria');
+      }
+
+      for (const employee of employees) {
+        try {
+          const payroll = await this.createPayroll({
+            employeeId: employee.id,
+            periodStart,
+            periodEnd,
+          });
+          payrolls.push(payroll);
+        } catch (error) {
+          throw new BadRequestException(`Error: ${error.message}`);
+        }
+      }
+
+      return { payrolls };
+    } catch (error) {
+      throw new BadRequestException(`Error: ${error.message}`);
+    }
+  }
+
   async getPayrolls(query: PayrollQueryDto): Promise<{
     items: Payroll[];
     total: number;
@@ -160,6 +193,10 @@ export class PayrollService {
 
       if (periodEnd) {
         filters['p.payPeriodEnd'] = { $lte: periodEnd };
+      }
+
+      if (Object.keys(filters).length > 0) {
+        qb.andWhere(filters);
       }
 
       const offset = (page - 1) * limit;

@@ -139,6 +139,231 @@
           "default": "uuid_generate_v4()",
           "mappedType": "uuid"
         },
+        "social_insurance_cap": {
+          "name": "social_insurance_cap",
+          "type": "numeric(15,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 15,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "health_insurance_cap": {
+          "name": "health_insurance_cap",
+          "type": "numeric(15,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 15,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "unemployment_insurance_cap": {
+          "name": "unemployment_insurance_cap",
+          "type": "numeric(15,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 15,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "social_insurance_employee_rate": {
+          "name": "social_insurance_employee_rate",
+          "type": "numeric(5,4)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 5,
+          "scale": 4,
+          "mappedType": "decimal"
+        },
+        "social_insurance_employer_rate": {
+          "name": "social_insurance_employer_rate",
+          "type": "numeric(5,4)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 5,
+          "scale": 4,
+          "mappedType": "decimal"
+        },
+        "health_insurance_employee_rate": {
+          "name": "health_insurance_employee_rate",
+          "type": "numeric(5,4)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 5,
+          "scale": 4,
+          "mappedType": "decimal"
+        },
+        "health_insurance_employer_rate": {
+          "name": "health_insurance_employer_rate",
+          "type": "numeric(5,4)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 5,
+          "scale": 4,
+          "mappedType": "decimal"
+        },
+        "unemployment_insurance_employee_rate": {
+          "name": "unemployment_insurance_employee_rate",
+          "type": "numeric(5,4)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 5,
+          "scale": 4,
+          "mappedType": "decimal"
+        },
+        "unemployment_insurance_employer_rate": {
+          "name": "unemployment_insurance_employer_rate",
+          "type": "numeric(5,4)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 5,
+          "scale": 4,
+          "mappedType": "decimal"
+        },
+        "personal_exemption": {
+          "name": "personal_exemption",
+          "type": "numeric(15,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 15,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "dependent_exemption": {
+          "name": "dependent_exemption",
+          "type": "numeric(15,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 15,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "tax_rates": {
+          "name": "tax_rates",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "overtime_base_rate": {
+          "name": "overtime_base_rate",
+          "type": "numeric(15,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 15,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "holiday_overtime_multiplier": {
+          "name": "holiday_overtime_multiplier",
+          "type": "numeric(5,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 5,
+          "scale": 2,
+          "mappedType": "decimal"
+        },
+        "effective_date": {
+          "name": "effective_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "date"
+        },
+        "expiry_date": {
+          "name": "expiry_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "mappedType": "date"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        }
+      },
+      "name": "payroll_config",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "payroll_config_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "uuid_generate_v4()",
+          "mappedType": "uuid"
+        },
         "name": {
           "name": "name",
           "type": "varchar(100)",
@@ -783,6 +1008,18 @@
           "default": "0",
           "mappedType": "decimal"
         },
+        "overtime_salary": {
+          "name": "overtime_salary",
+          "type": "numeric(10,2)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "default": "0",
+          "mappedType": "decimal"
+        },
         "net_salary": {
           "name": "net_salary",
           "type": "numeric(10,2)",
@@ -806,6 +1043,17 @@
           "default": "0",
           "mappedType": "decimal"
         },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 20,
+          "default": "'pending'",
+          "mappedType": "string"
+        },
         "payment_date": {
           "name": "payment_date",
           "type": "timestamp(6)",
@@ -816,29 +1064,6 @@
           "length": 6,
           "default": "CURRENT_TIMESTAMP",
           "mappedType": "datetime"
-        },
-        "overtime_salary": {
-          "name": "overtime_salary",
-          "type": "numeric(10,2)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "precision": 10,
-          "scale": 2,
-          "default": "0",
-          "mappedType": "decimal"
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar(20)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 20,
-          "default": "'pending'",
-          "mappedType": "string"
         },
         "created_at": {
           "name": "created_at",
@@ -955,8 +1180,28 @@
           "length": 0,
           "mappedType": "date"
         },
-        "basic_salary": {
-          "name": "basic_salary",
+        "component_type": {
+          "name": "component_type",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "component_name": {
+          "name": "component_name",
+          "type": "varchar(100)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 100,
+          "mappedType": "string"
+        },
+        "amount": {
+          "name": "amount",
           "type": "numeric(15,2)",
           "unsigned": false,
           "autoincrement": false,
@@ -966,100 +1211,14 @@
           "scale": 2,
           "mappedType": "decimal"
         },
-        "allowances": {
-          "name": "allowances",
-          "type": "jsonb",
+        "description": {
+          "name": "description",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "json"
-        },
-        "bonuses": {
-          "name": "bonuses",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "deductions": {
-          "name": "deductions",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "overtime_hours": {
-          "name": "overtime_hours",
-          "type": "numeric(5,2)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "precision": 5,
-          "scale": 2,
-          "default": "0.0",
-          "mappedType": "decimal"
-        },
-        "overtime_salary": {
-          "name": "overtime_salary",
-          "type": "numeric(15,2)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "precision": 15,
-          "scale": 2,
-          "mappedType": "decimal"
-        },
-        "net_salary": {
-          "name": "net_salary",
-          "type": "numeric(15,2)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "precision": 15,
-          "scale": 2,
-          "mappedType": "decimal"
-        },
-        "working_hours": {
-          "name": "working_hours",
-          "type": "numeric(5,2)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "precision": 5,
-          "scale": 2,
-          "mappedType": "decimal"
-        },
-        "daily_rate": {
-          "name": "daily_rate",
-          "type": "numeric(15,2)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "precision": 15,
-          "scale": 2,
-          "mappedType": "decimal"
-        },
-        "advance_amount": {
-          "name": "advance_amount",
-          "type": "numeric(15,2)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "precision": 15,
-          "scale": 2,
-          "default": "0",
-          "mappedType": "decimal"
+          "mappedType": "text"
         },
         "created_at": {
           "name": "created_at",
@@ -1720,6 +1879,121 @@
           "nullable": false,
           "mappedType": "uuid"
         },
+        "benefit_type": {
+          "name": "benefit_type",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "value": {
+          "name": "value",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
+        "effective_date": {
+          "name": "effective_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "date"
+        },
+        "expiry_date": {
+          "name": "expiry_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "mappedType": "date"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        }
+      },
+      "name": "employee_benefits",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "employee_benefits_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "employee_benefits_employee_id_foreign": {
+          "constraintName": "employee_benefits_employee_id_foreign",
+          "columnNames": [
+            "employee_id"
+          ],
+          "localTableName": "public.employee_benefits",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.employees",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "uuid_generate_v4()",
+          "mappedType": "uuid"
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
         "request_amount": {
           "name": "request_amount",
           "type": "numeric(15,2)",
@@ -1761,28 +2035,6 @@
           "nullable": true,
           "mappedType": "text"
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(6)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "datetime"
-        },
         "is_urgent": {
           "name": "is_urgent",
           "type": "boolean",
@@ -1811,6 +2063,28 @@
           "nullable": true,
           "length": 0,
           "mappedType": "date"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
         }
       },
       "name": "advance_requests",
@@ -1886,7 +2160,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "uuid"
         },
         "department_id": {
@@ -1895,7 +2169,16 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "mappedType": "uuid"
         },
         "basic_salary": {
@@ -1935,6 +2218,26 @@
           "primary": false,
           "nullable": true,
           "mappedType": "json"
+        },
+        "effective_date": {
+          "name": "effective_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "date"
+        },
+        "expiry_date": {
+          "name": "expiry_date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "mappedType": "date"
         },
         "created_at": {
           "name": "created_at",
@@ -1983,6 +2286,16 @@
           "unique": false
         },
         {
+          "columnNames": [
+            "employee_id"
+          ],
+          "composite": false,
+          "keyName": "idx_salary_rules_employee_id",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "salary_rules_pkey",
           "columnNames": [
             "id"
@@ -2005,7 +2318,7 @@
             "id"
           ],
           "referencedTableName": "public.positions",
-          "deleteRule": "cascade",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         },
         "salary_rules_department_id_foreign": {
@@ -2018,7 +2331,20 @@
             "id"
           ],
           "referencedTableName": "public.departments",
-          "deleteRule": "cascade",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "salary_rules_employee_id_foreign": {
+          "constraintName": "salary_rules_employee_id_foreign",
+          "columnNames": [
+            "employee_id"
+          ],
+          "localTableName": "public.salary_rules",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.employees",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },
@@ -2179,6 +2505,15 @@
           "length": 6,
           "mappedType": "datetime"
         },
+        "shift_id": {
+          "name": "shift_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
         "status": {
           "name": "status",
           "type": "varchar(20)",
@@ -2188,18 +2523,6 @@
           "nullable": false,
           "length": 20,
           "mappedType": "string"
-        },
-        "overtime_hours": {
-          "name": "overtime_hours",
-          "type": "numeric(5,2)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "precision": 5,
-          "scale": 2,
-          "default": "0.0",
-          "mappedType": "decimal"
         },
         "location": {
           "name": "location",
@@ -2232,15 +2555,6 @@
           "length": 6,
           "default": "CURRENT_TIMESTAMP",
           "mappedType": "datetime"
-        },
-        "shift_id": {
-          "name": "shift_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
         }
       },
       "name": "attendance",
@@ -2292,7 +2606,7 @@
             "id"
           ],
           "referencedTableName": "public.shift_configurations",
-          "deleteRule": "set null",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },

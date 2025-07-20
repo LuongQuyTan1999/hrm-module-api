@@ -16,6 +16,7 @@ import { TaxRecordsModule } from './modules/tax-records/tax-records.module';
 import { AdvanceRequestsModule } from './modules/advance-requests/advance-requests.module';
 import { PayrollConfigModule } from './modules/payroll-config/payroll-config.module';
 import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
+import { OvertimeModule } from './modules/overtime/overtime.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
     AdvanceRequestsModule,
     PayrollConfigModule,
     AuditLogsModule,
+    OvertimeModule,
   ],
   providers: [
     { provide: 'APP_GUARD', useClass: JwtAuthGuard },

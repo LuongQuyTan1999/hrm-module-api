@@ -1,12 +1,14 @@
+import { EntityManager } from '@mikro-orm/postgresql';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PayrollService } from '../payroll/payroll.service';
-import { PayrollDetailsRepository } from './payroll-details.repository';
 import { InsuranceRepository } from '../insurance/insurance.repository';
+import { OvertimeService } from '../overtime/overtime.service';
+import { PayrollService } from '../payroll/payroll.service';
 import { TaxRecordsRepository } from '../tax-records/tax-records.repository';
+import { PayrollDetailsRepository } from './payroll-details.repository';
 
 @Injectable()
 export class PayrollDetailsService {
@@ -15,6 +17,8 @@ export class PayrollDetailsService {
     private readonly payrollSer: PayrollService,
     private readonly insuranceRep: InsuranceRepository,
     private readonly taxRecordsRep: TaxRecordsRepository,
+    private readonly overtimeSer: OvertimeService,
+    private readonly em: EntityManager,
   ) {}
 
   async getPayrollDetails(id: string): Promise<any> {
@@ -25,17 +29,22 @@ export class PayrollDetailsService {
         throw new NotFoundException(`Can't find payroll with id: ${id}`);
       }
 
-      const details = await this.PayrollDetailsRep.find({
-        payroll,
-      });
-
-      const insurance = await this.insuranceRep.findOne({
-        payroll,
-      });
-
-      const tax = await this.taxRecordsRep.findOne({
-        payroll,
-      });
+      const [details, insurance, tax] = await Promise.all([
+        await this.PayrollDetailsRep.find({
+          payroll,
+        }),
+        await this.insuranceRep.findOne({
+          payroll,
+        }),
+        await this.taxRecordsRep.findOne({
+          payroll,
+        }),
+        // await this.overtimeSer.getOvertimeByEmployeeId(
+        //   payroll.employee.id,
+        //   payroll.payPeriodStart,
+        //   payroll.payPeriodEnd,
+        // ),
+      ]);
 
       return {
         employee: payroll.employee,
@@ -62,6 +71,15 @@ export class PayrollDetailsService {
           amount: d.amount,
           description: d.description,
         })),
+        // overtimeDetails: overtime.map((detail) => ({
+        //   id: detail.id,
+        //   overtimeDate: detail.overtimeDate,
+        //   overtimeHours: detail.overtimeHours,
+        //   // shiftName: detail.shift?.name || 'Standard',
+        //   // overtimeMultiplier: detail.shift?.overtimeMultiplier,
+        //   // amount: detail.overtimeHours + ,
+        //   reason: detail.reason,
+        // })),
         createdAt: payroll.createdAt,
       };
     } catch (error) {
