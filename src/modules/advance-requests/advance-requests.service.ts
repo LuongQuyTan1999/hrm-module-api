@@ -31,8 +31,14 @@ export class AdvanceRequestsService {
     limit: number;
     totalPages: number;
   }> {
-    const { page = 1, limit = 10, employeeId } = query;
-    const filters: Record<string, any> = {};
+    const {
+      page = 1,
+      limit = 10,
+      employeeId,
+      periodStart,
+      periodEnd,
+      status,
+    } = query;
 
     const qb = this.advanceRequestsRepository
       .createQueryBuilder('ad')
@@ -43,11 +49,19 @@ export class AdvanceRequestsService {
       .orderBy({ 'ad.updatedAt': 'DESC' });
 
     if (employeeId) {
-      filters['ad.employee'] = employeeId;
+      qb.andWhere({ 'ad.employee': employeeId });
     }
 
-    if (Object.keys(filters).length > 0) {
-      qb.andWhere(filters);
+    if (status) {
+      qb.andWhere({ 'ad.status': status });
+    }
+
+    if (periodStart) {
+      qb.andWhere({ 'ad.requestDate': { $gte: periodStart } });
+    }
+
+    if (periodEnd) {
+      qb.andWhere({ 'ad.requestDate': { $lte: periodEnd } });
     }
 
     const offset = (page - 1) * limit;
@@ -114,15 +128,22 @@ export class AdvanceRequestsService {
     }
   }
 
-  async getTotalAdvanceAmountByEmployeeId(employeeId): Promise<number> {
-    const advances = await this.getAdvanceRequests({ employeeId });
+  async getTotalAdvanceAmountByEmployeeId(
+    employeeId,
+    periodStart,
+    periodEnd,
+  ): Promise<number> {
+    const advances = await this.getAdvanceRequests({
+      employeeId,
+      periodStart,
+      periodEnd,
+    });
 
     const total = advances.items.reduce(
       (sum, ad) => (sum += Number(ad.requestAmount)),
       0,
     );
 
-    console.log({ advances });
     return total;
   }
 }

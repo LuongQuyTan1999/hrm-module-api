@@ -1,35 +1,43 @@
 import { Injectable } from '@nestjs/common';
+import { PayrollConfigService } from '../payroll-config/payroll-config.service';
 
 @Injectable()
 export class TaxRecordsService {
-  constructor() {}
+  constructor(private readonly payrollConfigSer: PayrollConfigService) {}
 
-  calculatePIT(taxableIncome: number, dependents) {
-    const PERSONAL_EXEMPTION = 11000000; // 11M VND
-    const DEPENDENT_EXEMPTION = 4400000; // 4.4M VND
+  async calculatePIT(
+    taxableIncome: number,
+    dependentsCount,
+    periodEnd: string,
+  ) {
+    const config = await this.payrollConfigSer.getPayrollConfig(periodEnd);
+
+    const PERSONAL_EXEMPTION = Number(config.personalExemption); // 11M VND
+    const DEPENDENT_EXEMPTION = Number(config.dependentExemption); // 4.4M VND
 
     const taxableIncomeAfterExemption = Math.max(
-      taxableIncome - PERSONAL_EXEMPTION - dependents * DEPENDENT_EXEMPTION,
+      taxableIncome -
+        PERSONAL_EXEMPTION -
+        dependentsCount * DEPENDENT_EXEMPTION,
       0,
     );
 
     let pit = 0;
-    if (taxableIncomeAfterExemption <= 5000000) {
-      pit = taxableIncomeAfterExemption * 0.05;
-    } else if (taxableIncomeAfterExemption <= 10000000) {
-      pit = 250000 + (taxableIncomeAfterExemption - 5000000) * 0.1;
-    } else if (taxableIncomeAfterExemption <= 18000000) {
-      pit = 750000 + (taxableIncomeAfterExemption - 10000000) * 0.15;
-    } else if (taxableIncomeAfterExemption <= 32000000) {
-      pit = 1950000 + (taxableIncomeAfterExemption - 18000000) * 0.2;
-    } else if (taxableIncomeAfterExemption <= 52000000) {
-      pit = 4750000 + (taxableIncomeAfterExemption - 32000000) * 0.25;
-    } else if (taxableIncomeAfterExemption <= 80000000) {
-      pit = 9750000 + (taxableIncomeAfterExemption - 52000000) * 0.3;
-    } else {
-      pit = 18150000 + (taxableIncomeAfterExemption - 80000000) * 0.35;
+    let taxRate = 0;
+
+    if (taxableIncomeAfterExemption > 0) {
+      const taxRates = config.taxRates || [];
+      let remainingIncome = taxableIncomeAfterExemption;
+      for (const { threshold, rate } of taxRates) {
+        if (remainingIncome > 0) {
+          const taxableAtThisRate = Math.min(remainingIncome, threshold);
+          pit += taxableAtThisRate * rate;
+          taxRate = rate;
+          remainingIncome -= taxableAtThisRate;
+        }
+      }
     }
 
-    return pit;
+    return { pit, taxRate };
   }
 }

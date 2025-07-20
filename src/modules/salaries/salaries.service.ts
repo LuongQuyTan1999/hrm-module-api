@@ -60,16 +60,20 @@ export class SalariesService {
     }
   }
 
-  async getSalary({ position, department }): Promise<SalaryRules> {
-    const salaryRule = await this.salaryRulesRepository.findOne({
-      position,
-      department,
-    });
+  async getSalaryRule({ employee, periodEnd }): Promise<SalaryRules> {
+    const salaryRule = await this.salaryRulesRepository.findOne(
+      {
+        employee,
+        position: employee.position,
+        department: employee.department,
+        effectiveDate: { $lte: periodEnd },
+        $or: [{ expiryDate: { $gte: periodEnd } }, { expiryDate: null }],
+      },
+      { orderBy: { employee: 'DESC' } },
+    );
 
     if (!salaryRule) {
-      throw new NotFoundException(
-        'Salary rule not found for the employee position and department.',
-      );
+      throw new NotFoundException('Salary rule not found.');
     }
 
     return salaryRule;

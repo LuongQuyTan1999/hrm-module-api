@@ -8,7 +8,7 @@ import {
 } from '@mikro-orm/core';
 import { Employees } from './employee.entity';
 import { Payroll } from './payroll.entity';
-import { TaxRecordsRepository } from 'src/modules/tax-records/payroll.repository';
+import { TaxRecordsRepository } from 'src/modules/tax-records/tax-records.repository';
 
 @Entity({ repository: () => TaxRecordsRepository })
 export class TaxRecords {

@@ -2,17 +2,18 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Attendance } from 'src/common/db/entities/attendance.entity';
+import { EmployeeBenefits } from 'src/common/db/entities/employeebenefit.entity';
 import { Payroll } from 'src/common/db/entities/payroll.entity';
 import { ShiftConfigurations } from 'src/common/db/entities/shiftconfiguration.entity';
+import { AdvanceRequestsService } from '../advance-requests/advance-requests.service';
 import { EmployeesService } from '../employees/employees.service';
 import { InsuranceRepository } from '../insurance/insurance.repository';
 import { PayrollDetailsRepository } from '../payroll-details/payroll-details.repository';
 import { SalariesService } from '../salaries/salaries.service';
-import { TaxRecordsRepository } from '../tax-records/payroll.repository';
+import { TaxRecordsRepository } from '../tax-records/tax-records.repository';
 import { CreatePayrollDto, PayrollQueryDto } from './dto/payroll.dto';
 import { PayrollRepository } from './payroll.repository';
 import { PayrollCalculatorService } from './services/payroll-calculator.service';
-import { AdvanceRequestsService } from '../advance-requests/advance-requests.service';
 
 @Injectable()
 export class PayrollService {
@@ -21,10 +22,11 @@ export class PayrollService {
     private readonly attendanceRep: EntityRepository<Attendance>,
     @InjectRepository(ShiftConfigurations)
     private readonly shiftConfigurationRep: EntityRepository<ShiftConfigurations>,
+    @InjectRepository(EmployeeBenefits)
+    private readonly employeeBenefitsRep: EntityRepository<EmployeeBenefits>,
 
     private readonly payrollRep: PayrollRepository,
     private readonly advanceRequestsSer: AdvanceRequestsService,
-    private readonly salaryService: SalariesService,
     private readonly calculatorSer: PayrollCalculatorService,
     private readonly salaries: SalariesService,
     private readonly payrollDetails: PayrollDetailsRepository,
@@ -38,23 +40,26 @@ export class PayrollService {
       const { employeeId, periodStart, periodEnd } = body;
       const employee = await this.employeesSer.findOne(employeeId);
 
-      const [salaryRule, employeeSalary, attendanceRecords] = await Promise.all(
-        [
-          this.salaries.getSalary({
-            position: employee.position,
-            department: employee.department,
-          }),
-          this.salaryService.getEmployeeSalary(employeeId),
-          this.attendanceRep.findAll({
-            where: {
-              employee, // You can use the shorthand here
-              checkIn: { $gte: periodStart, $lte: periodEnd },
-              checkOut: { $ne: null },
-            },
-            orderBy: { checkIn: 'ASC' },
-          }),
-        ],
-      );
+      const [salaryRule, attendanceRecords, benefits] = await Promise.all([
+        this.salaries.getSalaryRule({
+          employee,
+          periodEnd,
+        }),
+        this.attendanceRep.findAll({
+          where: {
+            employee, // You can use the shorthand here
+            checkIn: { $gte: periodStart, $lte: periodEnd },
+            checkOut: { $ne: null },
+          },
+          orderBy: { checkIn: 'ASC' },
+        }),
+        this.employeeBenefitsRep.findOne({
+          employee,
+          benefitType: 'dependents',
+          effectiveDate: { $lte: periodEnd },
+          $or: [{ expiryDate: { $gte: periodEnd } }, { expiryDate: null }],
+        }),
+      ]);
 
       const shift = await this.shiftConfigurationRep.findOne({
         id: attendanceRecords[0]?.shift?.id,
@@ -63,24 +68,23 @@ export class PayrollService {
       const totalAdvanceAmount =
         await this.advanceRequestsSer.getTotalAdvanceAmountByEmployeeId(
           employeeId,
+          periodStart,
+          periodEnd,
         );
 
-      const calculationResult = this.calculatorSer.calculate({
-        basicSalary: Number(employeeSalary.salaryAmount || 0),
-        allowanceRule: salaryRule.allowanceRule,
-        bonusRule: salaryRule.bonusRule,
-        deductionRule: salaryRule.deductionRule,
+      const calculationResult = await this.calculatorSer.calculate({
+        salaryRule,
+        benefits,
         overtimeRate: 150000, // Should be from config
         overtimeMultiplier: Number(shift?.overtimeMultiplier) || 1.5,
-        dependents: 0, // Should be from employee data
         totalAdvanceAmount,
         attendanceRecords,
+        periodEnd,
       });
 
       const data = {
         ...calculationResult,
         totalAdvanceAmount,
-        dependents: 0,
       };
 
       const payroll = await this.payrollRep.createPayroll(
@@ -92,8 +96,9 @@ export class PayrollService {
 
       const dataDetails = {
         ...data,
-        allowances: salaryRule.allowanceRule,
-        bonuses: salaryRule.bonusRule,
+        allowanceDetails: salaryRule.allowanceRule,
+        bonusDetails: salaryRule.bonusRule,
+        deductionDetails: salaryRule.deductionRule,
         id: payroll.id,
       };
 
@@ -173,6 +178,25 @@ export class PayrollService {
       throw new BadRequestException(
         `Error fetching payrolls: ${error.message}`,
       );
+    }
+  }
+
+  async getPayroll(payrollId: string): Promise<Payroll> {
+    try {
+      const payroll = await this.payrollRep.findOne(
+        {
+          id: payrollId,
+        },
+        { populate: ['employee'] },
+      );
+
+      if (!payroll) {
+        throw new Error('Payroll not found');
+      }
+
+      return payroll;
+    } catch (error) {
+      throw new BadRequestException(`Error: ${error.message}`);
     }
   }
 }

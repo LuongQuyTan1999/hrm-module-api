@@ -53,4 +53,16 @@ export class AdvanceRequestsQueryDto extends PaginationDto {
   @IsOptional()
   @IsString()
   employeeId?: string;
+
+  @IsOptional()
+  @IsString()
+  status?: AdvanceRequestsStatus;
+
+  @IsOptional()
+  @IsString()
+  periodStart?: string;
+
+  @IsOptional()
+  @IsString()
+  periodEnd?: string;
 }

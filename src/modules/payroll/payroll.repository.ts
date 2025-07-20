@@ -19,7 +19,7 @@ export class PayrollRepository extends EntityRepository<Payroll> {
       deductions: (
         data.insurance.total_insurance_employee +
         data.pit +
-        data.unionFee
+        data.deductions
       ).toFixed(2),
       netSalary: data.netSalary.toFixed(2),
       overtimeSalary: data.overtimeSalary.toFixed(2),

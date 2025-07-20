@@ -14,6 +14,8 @@ import { PositionsModule } from './modules/positions/positions.module';
 import { SalariesModule } from './modules/salaries/salaries.module';
 import { TaxRecordsModule } from './modules/tax-records/tax-records.module';
 import { AdvanceRequestsModule } from './modules/advance-requests/advance-requests.module';
+import { PayrollConfigModule } from './modules/payroll-config/payroll-config.module';
+import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { AdvanceRequestsModule } from './modules/advance-requests/advance-reques
     TaxRecordsModule,
     SalariesModule,
     AdvanceRequestsModule,
+    PayrollConfigModule,
+    AuditLogsModule,
   ],
   providers: [
     { provide: 'APP_GUARD', useClass: JwtAuthGuard },

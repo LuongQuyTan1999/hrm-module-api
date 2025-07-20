@@ -10,32 +10,61 @@ export class PayrollDetailsRepository extends EntityRepository<PayrollDetails> {
     periodStart: string,
     periodEnd: string,
   ): Promise<PayrollDetails> {
-    const payrollDetails = this.create({
-      payroll: this.em.getReference(Payroll, payroll.id),
-      employee: this.em.getReference(Employees, employeeId),
-      periodStartDate: periodStart,
-      periodEndDate: periodEnd,
-      basicSalary: payroll.basicSalary.toFixed(2),
-      allowances: payroll.allowances,
-      bonuses: payroll.bonuses,
-      deductions: {
-        social_insurance:
-          payroll.insurance.social_insurance_employee.toFixed(2),
-        health_insurance:
-          payroll.insurance.health_insurance_employee.toFixed(2),
-        unemployment_insurance:
-          payroll.insurance.unemployment_insurance_employee.toFixed(2),
-        union_fee: payroll.unionFee.toFixed(2),
-        personal_income_tax: payroll.pit.toFixed(2),
-      },
-      overtimeHours: payroll.overtimeHours.toFixed(2),
-      overtimeSalary: payroll.overtimeSalary.toFixed(2),
-      netSalary: payroll.netSalary.toFixed(2),
-      workingHours: payroll.workingHours.toFixed(2),
-      advanceAmount: payroll.totalAdvanceAmount.toFixed(2),
-    });
+    const allowanceDetailsRecords = Object.entries(
+      payroll.allowanceDetails,
+    ).map(([name, amount]) =>
+      this.create({
+        payroll: this.em.getReference(Payroll, payroll.id),
+        employee: this.em.getReference(Employees, employeeId),
+        periodStartDate: periodStart,
+        periodEndDate: periodEnd,
+        componentType: 'allowance',
+        componentName: name,
+        amount: String(amount),
+        description: `${name} allowance`,
+      }),
+    );
 
-    await this.em.persistAndFlush(payrollDetails);
+    const bonusDetailsRecords = Object.entries(payroll.bonusDetails).map(
+      ([name, amount]) =>
+        this.create({
+          payroll: this.em.getReference(Payroll, payroll.id),
+          employee: this.em.getReference(Employees, employeeId),
+          periodStartDate: periodStart,
+          periodEndDate: periodEnd,
+          componentType: 'bonus',
+          componentName: name,
+          amount: Number(amount).toFixed(2),
+          description: `${name} bonus`,
+        }),
+    );
+
+    const deductionDetailsRecords = Object.entries(
+      payroll.deductionDetails,
+    ).map(([name, amount]) =>
+      this.create({
+        payroll: this.em.getReference(Payroll, payroll.id),
+        employee: this.em.getReference(Employees, employeeId),
+        periodStartDate: periodStart,
+        periodEndDate: periodEnd,
+        componentType: 'deduction',
+        componentName: name,
+        amount: Number(amount).toFixed(2),
+        description: `${name} deduction`,
+      }),
+    );
+
+    const allDetailsToPersist = [
+      ...allowanceDetailsRecords,
+      ...bonusDetailsRecords,
+      ...deductionDetailsRecords,
+    ];
+
+    if (allDetailsToPersist.length > 0) {
+      await this.em.persistAndFlush(allDetailsToPersist);
+    }
+
+    const payrollDetails = {} as PayrollDetails;
 
     return payrollDetails;
   }

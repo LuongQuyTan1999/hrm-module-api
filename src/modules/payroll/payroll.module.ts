@@ -18,6 +18,9 @@ import { PayrollController } from './payroll.controller';
 import { PayrollService } from './payroll.service';
 import { PayrollCalculatorService } from './services/payroll-calculator.service';
 import { AdvanceRequestsService } from '../advance-requests/advance-requests.service';
+import { EmployeeBenefits } from 'src/common/db/entities/employeebenefit.entity';
+import { PayrollConfigService } from '../payroll-config/payroll-config.service';
+import { PayrollConfig } from 'src/common/db/entities/payrollconfig.entity';
 
 @Module({
   imports: [
@@ -32,6 +35,8 @@ import { AdvanceRequestsService } from '../advance-requests/advance-requests.ser
       TaxRecords,
       AdvanceRequests,
       EmployeeSalaries,
+      EmployeeBenefits,
+      PayrollConfig,
     ]),
     EmployeesModule,
   ],
@@ -43,6 +48,8 @@ import { AdvanceRequestsService } from '../advance-requests/advance-requests.ser
     InsuranceService,
     TaxRecordsService,
     PayrollCalculatorService,
+    PayrollConfigService,
   ],
+  exports: [PayrollService],
 })
 export class PayrollModule {}

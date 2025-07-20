@@ -36,13 +36,4 @@ export class AdvanceRequestsController {
   ) {
     return await this.advanceRequestsService.update(id, body, user);
   }
-
-  @Get('total-advance/:employeeId')
-  async getTotalAdvanceAmountByEmployeeId(
-    @Param('employeeId') employeeId: string,
-  ) {
-    return await this.advanceRequestsService.getTotalAdvanceAmountByEmployeeId(
-      employeeId,
-    );
-  }
 }
